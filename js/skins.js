@@ -22,6 +22,25 @@ export const SKINS = [
     },
   },
   {
+    id: "w201", name: "Mercedes 190E", era: "W201 · 1982–1993", font: "'Barlow Semi Condensed', sans-serif",
+    face: ["#161616", "#0a0a0a"], bezel: "#151515", ring: "#4a4a48", ink: "#f3f2ec", accent: "#ff6f1e",
+    needle: { c: "#ff6f1e", b: 4.6, t: 2.2, len: 88, tail: 10 }, hub: { r: 12, fill: "#0d0d0d" },
+    drum: { frame: "#000", cell: "#0c0c0c", ink: "#f3f2ec", border: "#2a2a2a", lastBg: "#ebe8de", lastInk: "#111" },
+    speed: {
+      v0: 20, a0: -135, v1: 240, a1: 135, rest: -145, from: 10, to: 240, minor: 10, major: 20,
+      R: 96, majL: 13, majW: 2.8, minL: 8, minW: 2.2,
+      lab: { from: 20, step: 20, r: 71, size: 15, big: 20, bigSize: 15, bigR: 71, bigWeight: 600 },
+      odo: 30, trip: 50,
+      texts: [{ y: -32, s: 9, t: "km/h", w: 600 }],
+    },
+    alt: {
+      v0: 0, a0: -135, v1: 40, a1: 135, rest: -142, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 13, majW: 2.8, minL: 7, minW: 1.8,
+      lab: { from: 0, step: 5, r: 70, size: 16, big: 5, bigSize: 16, bigR: 70, bigWeight: 600 },
+      drum: 34, texts: [{ y: -32, s: 10, t: "HÖHE", w: 600 }, { y: -21, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
     id: "e30", name: "BMW E30", era: "1982–1994", font: "'Barlow', sans-serif",
     face: ["#17181a", "#0e0f10"], bezel: "#0c0c0c", ring: "#2e2f31", ink: "#eef0f0", accent: "#ff4a1c",
     needle: { c: "#ff4a1c", b: 3.4, t: 2, len: 88, tail: 14 }, hub: { r: 11, fill: "#1b1c1e" },
