@@ -1,4 +1,17 @@
 // Angles: degrees clockwise from 12 o'clock. v0/a0 and v1/a1 anchor the scale; rest is the needle stop pin.
+// Dyane: wide arched dial, needle pivot hidden far below the window.
+const DYANE = {
+  view: "-110 -66 220 132", pivot: 150,
+  frame: {
+    bezel: "M-106,60L-106,-10C-106,-52 -62,-64 0,-64C62,-64 106,-52 106,-10L106,60Q106,64 102,64L-102,64Q-106,64 -106,60Z",
+    face: "M-100,56L-100,-10C-100,-47 -58,-58 0,-58C58,-58 100,-47 100,-10L100,56Q100,58 98,58L-98,58Q-100,58 -100,56Z",
+  },
+  clip: "M-90,6C-90,-23 -50,-32 0,-32C50,-32 90,-23 90,6Z",
+  under: `<path d="M-90,6C-90,-23 -50,-32 0,-32C50,-32 90,-23 90,6Z" fill="#c9ab8a"/><rect x="-100" y="6" width="200" height="4" fill="#bdbdb8"/>`,
+};
+const GEARS = `<g stroke="#f6f3ee" stroke-width="1.6" fill="none"><path d="M-7,36V50M0,36V50M7,36V43M-7,43H7"/></g>
+<g fill="#f6f3ee" font-size="4.5" text-anchor="middle"><text x="-7" y="34">AR</text><text x="0" y="34">2</text><text x="7" y="34">4</text><text x="-7" y="55">1</text><text x="0" y="55">3</text></g>`;
+
 export const SKINS = [
   {
     id: "w123", name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
@@ -115,6 +128,33 @@ export const SKINS = [
     },
   },
   {
+    id: "p356", name: "Porsche 356", era: "1948–1965", font: "'Barlow Semi Condensed', sans-serif",
+    face: ["#2c3647", "#222a38"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#eef1f3", accent: "#d8333a",
+    bands: [
+      { r0: 50, r1: 85, fill: "#28313f", groove: 2.6, grooveColor: "#323d4e" },
+      { r0: 0, r1: 46, fill: "#1d2430", groove: 2.6, grooveColor: "#262e3c" },
+      { r0: 46, r1: 48.5, fill: "#c9ced4" },
+    ],
+    needle: { c: "#dfe3e6", b: 5, t: 2, len: 80, tail: 0 }, hub: { r: 10, fill: "#101317" },
+    drum: { frame: "#000", cell: "#0b0b0b", ink: "#f2f2ee", border: "#9aa0a6", lastBg: "#0b0b0b", lastInk: "#f2f2ee" },
+    speed: {
+      v0: 0, a0: -142, v1: 200, a1: 142, rest: -146, from: 0, to: 200, minor: 10, major: 20,
+      R: 94, majL: 7, majW: 2.2, minL: 7, minW: 2.2,
+      rimLine: [{ r: 94, w: 1.4, from: 0, to: 200, hook: 0 }, { r: 87, w: 1.4, from: 0, to: 200, hook: 0 }],
+      lab: { from: 0, step: 20, r: 70, size: 15, big: 20, bigSize: 15, bigR: 70, bigWeight: 500 },
+      marks: [{ v: 35, r: 88.5, n: 2, w: 1.8 }, { v: 105, r: 88.5, n: 3, w: 1.8 }],
+      odo: 22, odoDigits: 5, trip: null,
+      texts: [{ y: 36, s: 6, t: "KM", w: 600 }],
+    },
+    alt: {
+      v0: 0, a0: -142, v1: 40, a1: 142, rest: -146, from: 0, to: 40, minor: 2, major: 10,
+      R: 94, majL: 7, majW: 2.2, minL: 7, minW: 2.2,
+      rimLine: [{ r: 94, w: 1.4, from: 0, to: 40, hook: 0 }, { r: 87, w: 1.4, from: 0, to: 40, hook: 0 }],
+      lab: { from: 0, step: 5, r: 70, size: 15, big: 5, bigSize: 15, bigR: 70, bigWeight: 500 },
+      drum: 22, texts: [{ y: -24, s: 7.5, t: "HÖHE", w: 600 }, { y: 36, s: 6, t: "m × 100" }],
+    },
+  },
+  {
     id: "vwbus", name: "VW Bus T1", era: "1950–1967", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#c2b796", "#a99e7e"], bezel: "#b8b8b4", chrome: true, ring: "#6a6a66", ink: "#efe0a6", accent: "#d9352a",
     bands: [{ r0: 44, r1: 88, fill: "#26211d", groove: 2.6, grooveColor: "#3d3630" }],
@@ -156,6 +196,28 @@ export const SKINS = [
       R: 92, majL: 14, majW: 3.2, minL: 7, minW: 2,
       lab: { from: 0, step: 5, r: 69, size: 15, big: 5, bigSize: 15, bigR: 69, bigWeight: 500 },
       drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE" }, { y: -21, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
+    id: "dyane", name: "Citroën Dyane", era: "1967–1983", font: "'Jost', sans-serif",
+    face: ["#8f6b4f", "#7b5b42"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#f6f3ee", accent: "#f0552a",
+    needle: { c: "#ff5f2a", b: 2.6, t: 2.2, len: 178, tail: 0 }, hub: { r: 0 },
+    drum: { frame: "#3a2d22", cell: "#111", ink: "#eeeeea", border: "none", lastBg: "#111", lastInk: "#eeeeea" },
+    speed: {
+      ...DYANE, under: DYANE.under + GEARS,
+      v0: 20, a0: -21, v1: 120, a1: 21, rest: -26, from: 30, to: 130, minor: 10, major: 20,
+      R: 176, majL: 6, majW: 1.6, minL: 4, minW: 1.5, tickInk: "#2a1d14", minorDot: true,
+      lab: { from: 20, step: 20, r: 200, size: 14, big: 20, bigSize: 14, bigR: 200, bigWeight: 600 },
+      marks: [{ v: 45, r: 170, w: 2.2 }, { v: 65, r: 170, w: 2.2 }, { v: 85, r: 170, w: 2.2 }],
+      odo: 21, odoDigits: 5, trip: 33, tripX: -62,
+      texts: [{ x: -62, y: 20, s: 7, t: "km" }, { x: 62, y: 30, s: 12, t: "km/h", w: 600 }],
+    },
+    alt: {
+      ...DYANE,
+      v0: 0, a0: -22, v1: 40, a1: 23, rest: -27, from: 0, to: 40, minor: 2.5, major: 5,
+      R: 176, majL: 6, majW: 1.6, minL: 4, minW: 1.5, tickInk: "#2a1d14", minorDot: true,
+      lab: { from: 0, step: 5, r: 200, size: 13, big: 5, bigSize: 13, bigR: 200, bigWeight: 600 },
+      drum: 30, texts: [{ x: -62, y: 30, s: 11, t: "HÖHE", w: 600 }, { x: 62, y: 30, s: 11, t: "m × 100", w: 600 }],
     },
   },
   {

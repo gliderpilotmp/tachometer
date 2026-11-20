@@ -25,7 +25,7 @@ function buildDash() {
   dash = {
     speedo, alti,
     odo: tenths ? (km) => odoDrum(km * 10) : odoDrum,
-    trip: sk.speed.trip == null ? () => {} : speedo.addDrum(sk.speed.trip, sk.speed.tripDigits || 4, 10.5, 14, true),
+    trip: sk.speed.trip == null ? () => {} : speedo.addDrum(sk.speed.trip, sk.speed.tripDigits || 4, 10.5, 14, true, undefined, sk.speed.tripX),
     alt: alti.addDrum(sk.alt.drum, 4, 12, 16, false),
   };
   $("skinName").textContent = sk.name;
