@@ -350,6 +350,26 @@ export const SKINS = [
     },
   },
   {
+    id: "testarossa", name: "Ferrari Testarossa", era: "1984–1991", font: "'Archivo Narrow', sans-serif",
+    face: ["#141414", "#0a0a0a"], bezel: "#0b0b0b", ring: "#262626", ink: "#f2f1ec", accent: "#ff5a1f",
+    needle: { c: "#ff5a1f", b: 4, t: 2.6, len: 90, tail: 12 }, hub: { r: 11, fill: "#0c0c0c" },
+    screws: [[-30, 5], [30, 5]],
+    drum: { frame: "#0a0a0a", cell: "#121212", ink: "#f2f2ec", border: "none", lastBg: "#c8201e", lastInk: "#fff" },
+    speed: {
+      v0: 0, a0: -128, v1: 320, a1: 128, rest: -130, from: 0, to: 320, minor: 10, major: 20,
+      R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
+      lab: { from: 0, step: 20, r: 74, size: 9, big: 40, bigSize: 17, bigR: 70, skip: [20] },
+      odo: -30, trip: 34,
+      texts: [{ y: 62, s: 8, t: "km/h" }],
+    },
+    alt: {
+      v0: 0, a0: -128, v1: 40, a1: 128, rest: -130, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
+      lab: { from: 0, step: 5, r: 73, size: 10, big: 10, bigSize: 18, bigR: 69 },
+      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE" }, { y: -21, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
     id: "f40", name: "Ferrari F40", era: "1987–1992", font: "'Archivo Narrow', sans-serif",
     face: ["#3a3a3b", "#232324"], bezel: "#0b0b0b", ring: "#2c2c2c", ink: "#ecebe6", accent: "#c8201e",
     needle: { c: "#f2f2ec", b: 4, t: 3.2, len: 90, tail: 4 }, hub: { r: 12, fill: "#0c0c0c" },
