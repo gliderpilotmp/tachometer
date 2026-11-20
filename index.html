@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Klassik-Tacho</title>
+<meta name="description" content="GPS-Tachometer und Höhenmesser im Stil legendärer Autos.">
+<meta name="theme-color" content="#050505">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;700&family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Jost:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main id="dash" aria-live="off">
+  <div class="speedo" id="speedo"></div>
+  <div class="alti" id="alti"></div>
+</main>
+
+<div id="status" class="chip" role="status">GPS aus</div>
+
+<nav id="bar" aria-label="Bedienung">
+  <button id="prevSkin" type="button" aria-label="Vorheriger Skin">‹</button>
+  <button id="skinName" type="button">Mercedes W123</button>
+  <button id="nextSkin" type="button" aria-label="Nächster Skin">›</button>
+  <button id="openSettings" type="button">Einstellungen</button>
+</nav>
+
+<section id="start">
+  <div class="start-inner">
+    <p class="eyebrow">GPS-Tacho &amp; Höhenmesser</p>
+    <h1>Klassik-Tacho</h1>
+    <p>Geschwindigkeit, Kilometer und Höhe kommen aus dem GPS deines Handys. Der Bildschirm bleibt an, solange die App offen ist.</p>
+    <button id="startBtn" class="primary" type="button">Losfahren</button>
+    <button id="demoBtn" class="ghost" type="button">Demo ohne GPS ansehen</button>
+    <p class="fine">Wische links oder rechts über den Tacho, um den Skin zu wechseln.</p>
+  </div>
+</section>
+
+<dialog id="settings">
+  <form method="dialog" id="settingsForm">
+    <h2>Einstellungen</h2>
+    <fieldset>
+      <legend>Skin</legend>
+      <div id="skinList" class="skin-list"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Höhenmesser</legend>
+      <label for="altOffset">Korrektur in Metern</label>
+      <div class="row">
+        <input id="altOffset" type="number" inputmode="numeric" step="1" value="0">
+        <span class="unit">m</span>
+      </div>
+      <label for="altKnown">Oder bekannte Höhe hier eingeben</label>
+      <div class="row">
+        <input id="altKnown" type="number" inputmode="numeric" step="1" placeholder="z. B. 412">
+        <button id="altCalibrate" type="button">Übernehmen</button>
+      </div>
+      <p class="fine" id="altHint">GPS-Höhe schwankt um etwa ±10 m. Eine Ortstafel mit Höhenangabe eignet sich gut zum Abgleich.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Zähler</legend>
+      <p class="readout">Tageskilometer <b id="tripReadout">0,0 km</b> · Gesamt <b id="odoReadout">0 km</b></p>
+      <div class="row">
+        <button id="resetTrip" type="button">Tageszähler auf 0</button>
+        <button id="resetOdo" type="button" class="danger">Gesamtzähler auf 0</button>
+      </div>
+      <p class="fine" id="resetConfirm" hidden>Nochmal tippen, um den Gesamtzähler zu löschen.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Anzeige</legend>
+      <label class="check"><input id="demoToggle" type="checkbox"> Demo-Modus (simulierte Fahrt)</label>
+      <button id="fullscreenBtn" type="button">Vollbild</button>
+    </fieldset>
+    <div class="actions"><button class="primary" value="close">Fertig</button></div>
+  </form>
+</dialog>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+// Angles: degrees clockwise from 12 o'clock. v0/a0 and v1/a1 anchor the scale; rest is the needle stop pin.
+export const SKINS = [
+  {
+    id: "w123", name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
+    face: ["#1b1b1b", "#0b0b0b"], bezel: "#1c1c1c", ring: "#8f8f8a", ink: "#f2f1ea", accent: "#ff7d1e",
+    needle: { c: "#ff7d1e", b: 4.4, t: 1.6, len: 86, tail: 6 }, hub: { r: 10, silver: true },
+    drum: { frame: "#030303", cell: "#0e0e0e", ink: "#f2f1ea", border: "#2e2e2e", lastBg: "#e9e6dc", lastInk: "#111" },
+    speed: {
+      v0: 20, a0: -150, v1: 200, a1: 135, rest: -160, from: 10, to: 200, minor: 10, major: 20,
+      R: 95, majL: 14, majW: 3.2, minL: 11, minW: 3,
+      lab: { from: 20, step: 20, r: 67, size: 16, big: 20, bigSize: 16, bigR: 67 },
+      zones: [{ from: 50, to: 60, r0: 86, r1: 96, hatch: true }],
+      marks: [{ v: 46, r: 57 }, { v: 83, r: 57 }, { v: 123, r: 57, n: 3 }],
+      odo: -27, trip: 26,
+      texts: [{ y: 60, s: 10, t: "km/h" }, { y: 71, s: 4.6, t: "123 542 50 01" }],
+    },
+    alt: {
+      v0: 0, a0: -135, v1: 40, a1: 135, rest: -138, from: 0, to: 40, minor: 1, major: 5,
+      R: 95, majL: 14, majW: 3.2, minL: 7, minW: 2,
+      lab: { from: 0, step: 5, r: 66, size: 17, big: 5, bigSize: 17, bigR: 66 },
+      drum: 32, texts: [{ y: -32, s: 11, t: "HÖHE" }, { y: -20, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
+    id: "p911", name: "Porsche 911", era: "G-Modell 1974–1989", font: "'Jost', sans-serif",
+    face: ["#22201e", "#121110"], bezel: "#0a0a0a", ring: "#3b3b3b", ink: "#f4f3ee", accent: "#ff6a13",
+    needle: { c: "#ff6a13", b: 5.2, t: 4, len: 92, tail: 4 }, hub: { r: 13, fill: "#2b2a29" },
+    screws: [[-38, 6], [38, 6]],
+    drum: { frame: "#000", cell: "#0a0a0a", ink: "#f4f3ee", border: "#cfcfca", lastBg: "#f4f4f0", lastInk: "#111" },
+    speed: {
+      v0: 20, a0: -128, v1: 260, a1: 125, rest: -140, from: 10, to: 260, minor: 10, major: 20,
+      R: 96, majL: 14, majW: 5, minL: 8, minW: 3.4,
+      lab: { from: 20, step: 20, r: 73, size: 11, big: 40, bigSize: 19, bigR: 68 },
+      zones: [{ from: 57.5, to: 62.5, r0: 82, r1: 96 }],
+      lamp: [0, -87], odo: -26, trip: 30,
+      texts: [{ y: -44, s: 11, t: "KM", w: 600 }],
+    },
+    alt: {
+      v0: 0, a0: -130, v1: 40, a1: 130, rest: -134, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 14, majW: 5, minL: 7, minW: 2.6,
+      lab: { from: 0, step: 5, r: 72, size: 11, big: 10, bigSize: 19, bigR: 67 },
+      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE", w: 600 }, { y: -20, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
+    id: "f40", name: "Ferrari F40", era: "1987–1992", font: "'Archivo Narrow', sans-serif",
+    face: ["#3a3a3b", "#232324"], bezel: "#0b0b0b", ring: "#2c2c2c", ink: "#ecebe6", accent: "#c8201e",
+    needle: { c: "#f2f2ec", b: 4, t: 3.2, len: 90, tail: 4 }, hub: { r: 12, fill: "#0c0c0c" },
+    screws: [[-30, 5], [30, 5]],
+    drum: { frame: "#0a0a0a", cell: "#121212", ink: "#f2f2ec", border: "none", lastBg: "#c8201e", lastInk: "#fff" },
+    speed: {
+      v0: 0, a0: -122, v1: 360, a1: 122, rest: -124, from: 0, to: 360, minor: 10, major: 20,
+      R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
+      lab: { from: 0, step: 20, r: 75, size: 8.5, big: 40, bigSize: 16, bigR: 69, skip: [20] },
+      dots: [[-34, 84, "#1f4a3a"], [0, 88, "#4a2a28"], [34, 84, "#2a2a40"]],
+      odo: -30, trip: 34,
+      texts: [{ x: -40, y: 66, s: 8, t: "km/h" }],
+    },
+    alt: {
+      v0: 0, a0: -122, v1: 40, a1: 122, rest: -124, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
+      lab: { from: 0, step: 5, r: 73, size: 10, big: 10, bigSize: 19, bigR: 68 },
+      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE" }, { y: -20, s: 7.5, t: "m × 100" }],
+    },
+  },
+];
