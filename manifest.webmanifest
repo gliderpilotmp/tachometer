@@ -1,7 +1,7 @@
 {
   "name": "Klassik-Tacho",
   "short_name": "Tacho",
-  "description": "GPS-Tachometer und Höhenmesser im Stil von Mercedes W123, Porsche 911, Porsche 944, Ferrari F40 und Fiat 500 Abarth.",
+  "description": "GPS-Tachometer und Höhenmesser im Stil von Mercedes W123, BMW E30, Porsche 911, Porsche 944, VW Bus T1, Ferrari F40 und Fiat 500 Abarth.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",

@@ -59,6 +59,10 @@ export function createGauge(container, sk, sc, label) {
 <linearGradient id="b${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f7f5"/><stop offset=".35" stop-color="#8d8d8a"/><stop offset=".6" stop-color="#e4e4e0"/><stop offset="1" stop-color="#5c5c59"/></linearGradient></defs>
 <circle r="109" fill="${sk.chrome ? `url(#b${uid})` : sk.bezel}"/><circle r="101.6" fill="none" stroke="${sk.ring}" stroke-width="1.4"/><circle r="100" fill="url(#f${uid})"/>`;
 
+  for (const b of sk.bands || []) {
+    s += `<circle r="${(b.r0 + b.r1) / 2}" fill="none" stroke="${b.fill}" stroke-width="${b.r1 - b.r0}"/>`;
+    if (b.groove) for (let r = b.r0 + b.groove; r < b.r1 - 0.5; r += b.groove) s += `<circle r="${r.toFixed(2)}" fill="none" stroke="${b.grooveColor}" stroke-width=".5"/>`;
+  }
   if (sc.rimLine) {
     const { r, w, from, to, hook } = sc.rimLine, a0 = ang(from), a1 = ang(to);
     const [x1, y1] = P(a0, r), [x2, y2] = P(a1, r), [hx1, hy1] = P(a0, r - hook), [hx2, hy2] = P(a1, r - hook);
@@ -86,7 +90,7 @@ export function createGauge(container, sk, sc, label) {
       s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sk.accent}" stroke-width="1.6"/>`;
     }
   }
-  for (const t of sc.texts || []) s += `<text x="${t.x || 0}" y="${t.y}" font-size="${t.s}" font-weight="${t.w || 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central" letter-spacing=".04em">${t.t}</text>`;
+  for (const t of sc.texts || []) s += `<text x="${t.x || 0}" y="${t.y}" font-size="${t.s}" font-weight="${t.w || 500}" fill="${t.c || ink}" text-anchor="middle" dominant-baseline="central" letter-spacing=".04em">${t.t}</text>`;
   if (sc.lamp) s += `<circle cx="${sc.lamp[0]}" cy="${sc.lamp[1]}" r="4" fill="#0f2a1e" stroke="#000"/>`;
   for (const d of sc.dots || []) s += `<circle cx="${d[0]}" cy="${d[1]}" r="5" fill="${d[2]}"/>`;
   for (const p of sk.screws || []) s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#1a1a1a" stroke="#000" stroke-width=".6"/><line x1="${p[0] - 2}" y1="${p[1]}" x2="${p[0] + 2}" y2="${p[1]}" stroke="#444" stroke-width=".8"/>`;
