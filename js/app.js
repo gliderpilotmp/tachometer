@@ -21,12 +21,13 @@ function buildDash() {
   state.skin = sk.id;
   const speedo = createInstrument($("speedo"), sk, sk.speed, `Tachometer im Stil ${sk.name}`);
   const alti = createInstrument($("alti"), sk, sk.alt, `Höhenmesser im Stil ${sk.name}`);
-  const tenths = !!sk.speed.odoTenths, odoDrum = speedo.addDrum(sk.speed.odo, sk.speed.odoDigits || 6, sk.speed.odoCw || 10.5, 14, tenths, sk.speed.odoStyle, sk.speed.odoX);
+  const none = () => {};
+  const tenths = !!sk.speed.odoTenths, odoDrum = sk.speed.odo == null ? none : speedo.addDrum(sk.speed.odo, sk.speed.odoDigits || 6, sk.speed.odoCw || 10.5, 14, tenths, sk.speed.odoStyle, sk.speed.odoX);
   dash = {
     speedo, alti,
     odo: tenths ? (km) => odoDrum(km * 10) : odoDrum,
-    trip: sk.speed.trip == null ? () => {} : speedo.addDrum(sk.speed.trip, sk.speed.tripDigits || 4, 10.5, 14, true, undefined, sk.speed.tripX),
-    alt: alti.addDrum(sk.alt.drum, 4, 12, 16, false, undefined, sk.alt.drumX),
+    trip: sk.speed.trip == null ? none : speedo.addDrum(sk.speed.trip, sk.speed.tripDigits || 4, 10.5, 14, true, undefined, sk.speed.tripX),
+    alt: sk.alt.drum == null ? none : alti.addDrum(sk.alt.drum, 4, 12, 16, false, undefined, sk.alt.drumX),
   };
   $("skinName").textContent = sk.name;
   const radio = document.querySelector(`input[name="skin"][value="${sk.id}"]`);

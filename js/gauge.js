@@ -105,7 +105,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     if (L.skip && L.skip.includes(v)) continue;
     const big = (v - (L.bigOffset || 0)) % L.big === 0, an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
-    const stroke = L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "";
+    const stroke = (L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "") + (L.italic ? ` font-style="italic"` : "");
     s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
   }
   for (const m of sc.marks || []) {
@@ -133,6 +133,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   }
   s += `</g>`;
   for (const t of sc.texts || []) s += `<text x="${t.x || 0}" y="${t.y}" font-size="${t.s}" font-weight="${t.w || 500}" fill="${t.c || ink}" text-anchor="middle" dominant-baseline="central" letter-spacing=".04em">${t.t}</text>`;
+  if (sc.decor) s += sc.decor;
   if (sc.lamp) s += `<circle cx="${sc.lamp[0]}" cy="${sc.lamp[1]}" r="4" fill="#0f2a1e" stroke="#000"/>`;
   for (const d of sc.dots || []) s += `<circle cx="${d[0]}" cy="${d[1]}" r="5" fill="${d[2]}"/>`;
   for (const p of sk.screws || []) s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#1a1a1a" stroke="#000" stroke-width=".6"/><line x1="${p[0] - 2}" y1="${p[1]}" x2="${p[0] + 2}" y2="${p[1]}" stroke="#444" stroke-width=".8"/>`;

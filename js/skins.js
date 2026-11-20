@@ -12,6 +12,11 @@ const DYANE = {
 const GEARS = `<g stroke="#f6f3ee" stroke-width="1.6" fill="none"><path d="M-7,36V50M0,36V50M7,36V43M-7,43H7"/></g>
 <g fill="#f6f3ee" font-size="4.5" text-anchor="middle"><text x="-7" y="34">AR</text><text x="0" y="34">2</text><text x="7" y="34">4</text><text x="-7" y="55">1</text><text x="0" y="55">3</text></g>`;
 
+// Testarossa: dark warning-lamp bar across the bottom of the dial.
+const LAMP_BAR = `<path d="M-46,66Q0,58 46,66L42,90Q0,97 -42,90Z" fill="#26272a" stroke="#3a3b3e" stroke-width="1"/>
+<g fill="#4a4b4f"><circle cx="-24" cy="78" r="6.5"/><circle cx="0" cy="79" r="6.5"/><circle cx="24" cy="78" r="6.5"/></g>
+<g fill="#77787c"><path d="M-27,78L-21,74V82Z"/><path d="M27,78L21,74V82Z"/><circle cx="0" cy="79" r="2.6"/></g>`;
+
 export const SKINS = [
   {
     id: "w123", name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
@@ -351,22 +356,24 @@ export const SKINS = [
   },
   {
     id: "testarossa", name: "Ferrari Testarossa", era: "1984–1991", font: "'Archivo Narrow', sans-serif",
-    face: ["#141414", "#0a0a0a"], bezel: "#0b0b0b", ring: "#262626", ink: "#f2f1ec", accent: "#ff5a1f",
-    needle: { c: "#ff5a1f", b: 4, t: 2.6, len: 90, tail: 12 }, hub: { r: 11, fill: "#0c0c0c" },
-    screws: [[-30, 5], [30, 5]],
-    drum: { frame: "#0a0a0a", cell: "#121212", ink: "#f2f2ec", border: "none", lastBg: "#c8201e", lastInk: "#fff" },
+    face: ["#141414", "#0b0b0b"], bezel: "#1b1c1e", ring: "#2c2d30", ink: "#ff8a1e", accent: "#ff8a1e",
+    needle: { c: "#ff8a1e", b: 3.2, t: 2.2, len: 86, tail: 8 }, hub: { r: 6, fill: "#0c0c0c" },
+    screws: [[-13, -3], [13, -3]],
+    drum: { frame: "#0a0a0a", cell: "#121212", ink: "#ff8a1e", border: "none", lastBg: "#121212", lastInk: "#ff8a1e" },
     speed: {
-      v0: 0, a0: -128, v1: 320, a1: 128, rest: -130, from: 0, to: 320, minor: 10, major: 20,
-      R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
-      lab: { from: 0, step: 20, r: 74, size: 9, big: 40, bigSize: 17, bigR: 70, skip: [20] },
-      odo: -30, trip: 34,
-      texts: [{ y: 62, s: 8, t: "km/h" }],
+      v0: 0, a0: -132, v1: 320, a1: 129, rest: -134, from: 0, to: 320, minor: 10, major: 20,
+      R: 96, majL: 11, majW: 2.2, minL: 6, minW: 1.6,
+      lab: { from: 0, step: 20, r: 74, size: 13, big: 20, bigSize: 13, bigR: 74, bigWeight: 700, italic: true },
+      decor: LAMP_BAR,
+      odo: null, trip: null,
+      texts: [{ y: -30, s: 6.5, t: "electronic", w: 700 }, { x: 18, y: 36, s: 6.5, t: "km/h", w: 700 }],
     },
     alt: {
-      v0: 0, a0: -128, v1: 40, a1: 128, rest: -130, from: 0, to: 40, minor: 1, major: 5,
-      R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
-      lab: { from: 0, step: 5, r: 73, size: 10, big: 10, bigSize: 18, bigR: 69 },
-      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE" }, { y: -21, s: 7.5, t: "m × 100" }],
+      v0: 0, a0: -132, v1: 40, a1: 129, rest: -134, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 11, majW: 2.2, minL: 6, minW: 1.6,
+      lab: { from: 0, step: 5, r: 74, size: 14, big: 5, bigSize: 14, bigR: 74, bigWeight: 700, italic: true },
+      decor: LAMP_BAR,
+      drum: null, texts: [{ y: -30, s: 7, t: "HÖHE", w: 700 }, { x: 18, y: 36, s: 7, t: "x 100", w: 700 }],
     },
   },
   {
