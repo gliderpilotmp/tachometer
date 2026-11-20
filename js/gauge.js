@@ -55,8 +55,15 @@ export function createGauge(container, sk, sc, label) {
 <radialGradient id="f${uid}" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="${sk.face[0]}"/><stop offset="1" stop-color="${sk.face[1]}"/></radialGradient>
 <radialGradient id="h${uid}" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f6f6f4"/><stop offset=".55" stop-color="#acaca8"/><stop offset="1" stop-color="#5f5f5c"/></radialGradient>
 <linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<pattern id="p${uid}" width="3.4" height="3.4" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="1.7" height="3.4" fill="${sk.accent}"/></pattern></defs>
-<circle r="109" fill="${sk.bezel}"/><circle r="101.6" fill="none" stroke="${sk.ring}" stroke-width="1.4"/><circle r="100" fill="url(#f${uid})"/>`;
+<pattern id="p${uid}" width="3.4" height="3.4" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="1.7" height="3.4" fill="${sk.accent}"/></pattern>
+<linearGradient id="b${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f7f5"/><stop offset=".35" stop-color="#8d8d8a"/><stop offset=".6" stop-color="#e4e4e0"/><stop offset="1" stop-color="#5c5c59"/></linearGradient></defs>
+<circle r="109" fill="${sk.chrome ? `url(#b${uid})` : sk.bezel}"/><circle r="101.6" fill="none" stroke="${sk.ring}" stroke-width="1.4"/><circle r="100" fill="url(#f${uid})"/>`;
+
+  if (sc.rimLine) {
+    const { r, w, from, to, hook } = sc.rimLine, a0 = ang(from), a1 = ang(to);
+    const [x1, y1] = P(a0, r), [x2, y2] = P(a1, r), [hx1, hy1] = P(a0, r - hook), [hx2, hy2] = P(a1, r - hook);
+    s += `<path d="M${hx1},${hy1}L${x1},${y1}A${r},${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x2},${y2}L${hx2},${hy2}" fill="none" stroke="${ink}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  }
 
   for (const z of sc.zones || []) s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.hatch ? `url(#p${uid})` : sk.accent}"/>`;
   for (let v = sc.from; v <= sc.to; v += sc.minor) {
@@ -68,8 +75,9 @@ export function createGauge(container, sk, sc, label) {
   const L = sc.lab;
   for (let v = L.from; v <= sc.to; v += L.step) {
     if (L.skip && L.skip.includes(v)) continue;
-    const big = v % L.big === 0, [x, y] = P(ang(v), big ? L.bigR : L.r);
-    s += `<text x="${x}" y="${y}" font-size="${big ? L.bigSize : L.size}" font-weight="${big ? 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
+    const big = (v - (L.bigOffset || 0)) % L.big === 0, an = ang(v), [x, y] = P(an, big ? L.bigR : L.r);
+    const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
+    s += `<text x="${x}" y="${y}"${rot} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
   }
   for (const m of sc.marks || []) {
     const n = m.n || 1;

@@ -21,10 +21,11 @@ function buildDash() {
   state.skin = sk.id;
   const speedo = createGauge($("speedo"), sk, sk.speed, `Tachometer im Stil ${sk.name}`);
   const alti = createGauge($("alti"), sk, sk.alt, `Höhenmesser im Stil ${sk.name}`);
+  const tenths = !!sk.speed.odoTenths, odoDrum = speedo.addDrum(sk.speed.odo, 6, 10.5, 14, tenths);
   dash = {
     speedo, alti,
-    odo: speedo.addDrum(sk.speed.odo, 6, 10.5, 14, false),
-    trip: speedo.addDrum(sk.speed.trip, 4, 10.5, 14, true),
+    odo: tenths ? (km) => odoDrum(km * 10) : odoDrum,
+    trip: sk.speed.trip == null ? () => {} : speedo.addDrum(sk.speed.trip, 4, 10.5, 14, true),
     alt: alti.addDrum(sk.alt.drum, 4, 12, 16, false),
   };
   $("skinName").textContent = sk.name;
