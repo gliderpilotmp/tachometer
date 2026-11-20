@@ -12,6 +12,17 @@ const arc = (a0, a1, r0, r1) => {
   return `M${x1},${y1}A${r1},${r1} 0 ${L} 1 ${x2},${y2}L${x3},${y3}A${r0},${r0} 0 ${L} 0 ${x4},${y4}Z`;
 };
 
+// Superellipse |x|^n + |y|^n = a^n: a rounded square for n around 4–6.
+const squircle = (a, n) => {
+  let d = "";
+  for (let i = 0; i < 360; i += 3) {
+    const t = (i * Math.PI) / 180, c = Math.cos(t), s = Math.sin(t);
+    const x = a * Math.sign(c) * Math.abs(c) ** (2 / n), y = a * Math.sign(s) * Math.abs(s) ** (2 / n);
+    d += `${i ? "L" : "M"}${x.toFixed(2)},${y.toFixed(2)}`;
+  }
+  return d + "Z";
+};
+
 const el = (tag, attrs, parent) => {
   const e = document.createElementNS(NS, tag);
   for (const k in attrs) e.setAttribute(k, attrs[k]);
@@ -20,8 +31,8 @@ const el = (tag, attrs, parent) => {
 };
 
 // Mechanical counter: digits roll like real drums, higher digits turn only while all lower ones pass 9 -> 0.
-function createDrum(group, sk, n, cw, ch, highlightLast) {
-  const d = sk.drum, gap = 1.4, pad = 1.6, w = n * cw + (n - 1) * gap, clipId = `c${++uidSeq}`;
+function createDrum(group, sk, n, cw, ch, highlightLast, style) {
+  const d = { ...sk.drum, ...style }, gap = 1.4, pad = 1.6, w = n * cw + (n - 1) * gap, clipId = `c${++uidSeq}`;
   const clip = el("clipPath", { id: clipId }, group);
   el("rect", { x: -w / 2 - pad, y: -ch / 2 - pad, width: w + 2 * pad, height: ch + 2 * pad, fill: d.frame }, group);
   const cells = [];
@@ -51,13 +62,20 @@ function createDrum(group, sk, n, cw, ch, highlightLast) {
 export function createGauge(container, sk, sc, label) {
   const uid = ++uidSeq, ink = sk.ink;
   const ang = (v) => sc.a0 + ((v - sc.v0) * (sc.a1 - sc.a0)) / (sc.v1 - sc.v0);
+  const n = sk.squircle;
+  const outline = (r, attrs) => (n ? `<path d="${squircle(r, n)}" ${attrs}/>` : `<circle r="${r}" ${attrs}/>`);
+  const k = (an) => {
+    if (!n) return 1;
+    const t = (an * Math.PI) / 180;
+    return (Math.abs(Math.cos(t)) ** n + Math.abs(Math.sin(t)) ** n) ** (-1 / n);
+  };
   let s = `<svg viewBox="-110 -110 220 220" role="img" aria-label="${label}" font-family="${sk.font}"><defs>
 <radialGradient id="f${uid}" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="${sk.face[0]}"/><stop offset="1" stop-color="${sk.face[1]}"/></radialGradient>
 <radialGradient id="h${uid}" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f6f6f4"/><stop offset=".55" stop-color="#acaca8"/><stop offset="1" stop-color="#5f5f5c"/></radialGradient>
 <linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <pattern id="p${uid}" width="3.4" height="3.4" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="1.7" height="3.4" fill="${sk.accent}"/></pattern>
 <linearGradient id="b${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f7f5"/><stop offset=".35" stop-color="#8d8d8a"/><stop offset=".6" stop-color="#e4e4e0"/><stop offset="1" stop-color="#5c5c59"/></linearGradient></defs>
-<circle r="109" fill="${sk.chrome ? `url(#b${uid})` : sk.bezel}"/><circle r="101.6" fill="none" stroke="${sk.ring}" stroke-width="1.4"/><circle r="100" fill="url(#f${uid})"/>`;
+${outline(n ? 104 : 109, `fill="${sk.chrome ? `url(#b${uid})` : sk.bezel}"`)}${outline(n ? 97.4 : 101.6, `fill="none" stroke="${sk.ring}" stroke-width="1.4"`)}${outline(n ? 96 : 100, `fill="url(#f${uid})"`)}`;
 
   for (const b of sk.bands || []) {
     s += `<circle r="${(b.r0 + b.r1) / 2}" fill="none" stroke="${b.fill}" stroke-width="${b.r1 - b.r0}"/>`;
@@ -72,14 +90,14 @@ export function createGauge(container, sk, sc, label) {
   for (const z of sc.zones || []) s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.hatch ? `url(#p${uid})` : sk.accent}"/>`;
   for (let v = sc.from; v <= sc.to; v += sc.minor) {
     if ((sc.zones || []).some((z) => !z.hatch && v > z.from && v < z.to)) continue;
-    const M = v % sc.major === 0, an = ang(v);
-    const [x1, y1] = P(an, sc.R), [x2, y2] = P(an, sc.R - (M ? sc.majL : sc.minL));
+    const M = v % sc.major === 0, an = ang(v), R = sc.R * k(an);
+    const [x1, y1] = P(an, R), [x2, y2] = P(an, R - (M ? sc.majL : sc.minL));
     s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${ink}" stroke-width="${M ? sc.majW : sc.minW}"/>`;
   }
   const L = sc.lab;
   for (let v = L.from; v <= sc.to; v += L.step) {
     if (L.skip && L.skip.includes(v)) continue;
-    const big = (v - (L.bigOffset || 0)) % L.big === 0, an = ang(v), [x, y] = P(an, big ? L.bigR : L.r);
+    const big = (v - (L.bigOffset || 0)) % L.big === 0, an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
     s += `<text x="${x}" y="${y}"${rot} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
   }
@@ -108,8 +126,8 @@ export function createGauge(container, sk, sc, label) {
       const a = +Math.max(sc.rest, Math.min(sc.a1 + 3, ang(v))).toFixed(2);
       if (a !== lastA) { needle.setAttribute("transform", `rotate(${a})`); lastA = a; }
     },
-    addDrum(y, n, cw, ch, highlightLast) {
-      return createDrum(el("g", { transform: `translate(0 ${y})` }, drums), sk, n, cw, ch, highlightLast);
+    addDrum(y, digits, cw, ch, highlightLast, style) {
+      return createDrum(el("g", { transform: `translate(0 ${y})` }, drums), sk, digits, cw, ch, highlightLast, style);
     },
   };
 }
