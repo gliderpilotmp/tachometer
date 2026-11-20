@@ -42,7 +42,7 @@ function createDrum(group, sk, n, cw, ch, highlightLast, style) {
     el("rect", { x, y: -ch / 2, width: cw, height: ch, fill: hl ? d.lastBg : d.cell }, group);
     const holder = el("g", { "clip-path": `url(#${clipId})` }, group);
     const roll = el("g", {}, holder);
-    const attrs = { x: x + cw / 2, "font-size": ch * 0.8, fill: hl ? d.lastInk : d.ink, "text-anchor": "middle", "dominant-baseline": "central" };
+    const attrs = { x: x + cw / 2, "font-size": ch * 0.8, ...(d.font && { "font-family": d.font }), fill: hl ? d.lastInk : d.ink, "text-anchor": "middle", "dominant-baseline": "central" };
     const a = el("text", { ...attrs, y: 0.5 }, roll), b = el("text", { ...attrs, y: ch + 0.5 }, roll);
     if (d.border !== "none") el("rect", { x, y: -ch / 2, width: cw, height: ch, fill: "none", stroke: d.border, "stroke-width": 0.7 }, group);
     cells.push({ roll, a, b, last: -1, lastOff: NaN });
@@ -105,7 +105,8 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     if (L.skip && L.skip.includes(v)) continue;
     const big = (v - (L.bigOffset || 0)) % L.big === 0, an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
-    s += `<text x="${x}" y="${y}"${rot} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
+    const stroke = L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "";
+    s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
   }
   for (const m of sc.marks || []) {
     const n = m.n || 1;

@@ -199,6 +199,26 @@ export const SKINS = [
     },
   },
   {
+    id: "rekorde", name: "Opel Rekord E", era: "1977–1986", font: "'Michroma', sans-serif",
+    face: ["#151515", "#0c0c0c"], bezel: "#0a0a0a", ring: "#1c1c1c", ink: "#f4f4f0", accent: "#e8402a",
+    needle: { c: "#ffa51c", b: 5.6, t: 4, len: 86, tail: 0 }, hub: { r: 13, fill: "#161616" },
+    drum: { frame: "#000", cell: "#0b0b0b", ink: "#ecece6", border: "none", lastBg: "#ecebe3", lastInk: "#111", font: "'Barlow', sans-serif" },
+    speed: {
+      v0: 20, a0: -160, v1: 200, a1: 130, rest: -166, from: 20, to: 200, minor: 10, major: 20,
+      R: 92, majL: 7, majW: 2.6, minL: 7, minW: 2.6,
+      lab: { from: 20, step: 20, r: 67, size: 11, big: 20, bigSize: 11, bigR: 67, bigWeight: 400, stroke: 0.7 },
+      marks: [{ v: 50, r: 87, w: 2.6 }],
+      odo: -22, odoTenths: true, trip: null,
+      texts: [{ x: 26, y: 56, s: 6.5, t: "km/h" }, { x: 26, y: 64, s: 4.5, t: "W=788" }],
+    },
+    alt: {
+      v0: 0, a0: -150, v1: 40, a1: 130, rest: -156, from: 0, to: 40, minor: 2.5, major: 5,
+      R: 92, majL: 7, majW: 2.6, minL: 7, minW: 2.6,
+      lab: { from: 0, step: 5, r: 68, size: 11, big: 5, bigSize: 11, bigR: 68, bigWeight: 400, stroke: 0.7 },
+      drum: 32, texts: [{ y: -32, s: 7, t: "HÖHE" }, { y: -22, s: 5.5, t: "m × 100" }],
+    },
+  },
+  {
     id: "dyane", name: "Citroën Dyane", era: "1967–1983", font: "'Jost', sans-serif",
     face: ["#8f6b4f", "#7b5b42"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#f6f3ee", accent: "#f0552a",
     needle: { c: "#ff5f2a", b: 2.6, t: 2.2, len: 178, tail: 0 }, hub: { r: 0 },
