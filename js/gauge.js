@@ -95,7 +95,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   for (const z of sc.zones || []) s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.hatch ? `url(#p${uid})` : sk.accent}"/>`;
   for (let v = sc.from; v <= sc.to; v += sc.minor) {
     if ((sc.zones || []).some((z) => !z.hatch && v > z.from && v < z.to)) continue;
-    const M = v % sc.major === 0, an = ang(v), R = sc.R * k(an);
+    const M = (v - (sc.majOff || 0)) % sc.major === 0, an = ang(v), R = sc.R * k(an);
     if (!M && sc.minorDot) { const [cx, cy] = P(an, R - sc.minL / 2); s += `<circle cx="${cx}" cy="${cy}" r="${sc.minW}" fill="${sc.tickInk || ink}"/>`; continue; }
     const [x1, y1] = P(an, R), [x2, y2] = P(an, R - (M ? sc.majL : sc.minL));
     s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sc.tickInk || ink}" stroke-width="${M ? sc.majW : sc.minW}"/>`;
@@ -113,6 +113,22 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     for (let k = 0; k < n; k++) {
       const an = ang(m.v) + (k - (n - 1) / 2) * 2.2, [x1, y1] = P(an, m.r), [x2, y2] = P(an, m.r + 5);
       s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sk.accent}" stroke-width="${m.w || 1.6}"/>`;
+    }
+  }
+  if (sc.inner) {
+    // Secondary scale (e.g. mph) drawn at the angles its values reach on the main scale.
+    const I = sc.inner, ia = (w) => ang(w * I.factor), b0 = ia(I.from), b1 = ia(I.to), big = b1 - b0 > 180 ? 1 : 0;
+    for (const r of I.rings) {
+      const [x1, y1] = P(b0, r), [x2, y2] = P(b1, r);
+      s += `<path d="M${x1},${y1}A${r},${r} 0 ${big} 1 ${x2},${y2}" fill="none" stroke="${I.color}" stroke-width="${I.w}"/>`;
+    }
+    for (let w = I.from; w <= I.to; w += I.minor) {
+      const [x1, y1] = P(ia(w), I.R), [x2, y2] = P(ia(w), I.R - I.L);
+      s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${I.color}" stroke-width="${I.w}"/>`;
+    }
+    for (let w = I.from; w <= I.to; w += I.step) {
+      const [x, y] = P(ia(w), I.r);
+      s += `<text x="${x}" y="${y}" font-size="${I.size}" font-family="${I.font || sk.font}" fill="${I.color}" text-anchor="middle" dominant-baseline="central">${w}</text>`;
     }
   }
   s += `</g>`;
