@@ -1,5 +1,5 @@
 import { SKINS } from "./skins.js";
-import { createGauge } from "./gauge.js";
+import { createInstrument } from "./gauge.js";
 
 const $ = (id) => document.getElementById(id);
 const STORE_KEY = "klassik-tacho";
@@ -19,14 +19,14 @@ let dash = null;
 function buildDash() {
   const sk = SKINS.find((s) => s.id === state.skin) || SKINS[0];
   state.skin = sk.id;
-  const speedo = createGauge($("speedo"), sk, sk.speed, `Tachometer im Stil ${sk.name}`);
-  const alti = createGauge($("alti"), sk, sk.alt, `Höhenmesser im Stil ${sk.name}`);
-  const tenths = !!sk.speed.odoTenths, odoDrum = speedo.addDrum(sk.speed.odo, sk.speed.odoDigits || 6, 10.5, 14, tenths, sk.speed.odoStyle);
+  const speedo = createInstrument($("speedo"), sk, sk.speed, `Tachometer im Stil ${sk.name}`);
+  const alti = createInstrument($("alti"), sk, sk.alt, `Höhenmesser im Stil ${sk.name}`);
+  const tenths = !!sk.speed.odoTenths, odoDrum = speedo.addDrum(sk.speed.odo, sk.speed.odoDigits || 6, 10.5, 14, tenths, sk.speed.odoStyle, sk.speed.odoX);
   dash = {
     speedo, alti,
     odo: tenths ? (km) => odoDrum(km * 10) : odoDrum,
     trip: sk.speed.trip == null ? () => {} : speedo.addDrum(sk.speed.trip, sk.speed.tripDigits || 4, 10.5, 14, true, undefined, sk.speed.tripX),
-    alt: alti.addDrum(sk.alt.drum, 4, 12, 16, false),
+    alt: alti.addDrum(sk.alt.drum, 4, 12, 16, false, undefined, sk.alt.drumX),
   };
   $("skinName").textContent = sk.name;
   const radio = document.querySelector(`input[name="skin"][value="${sk.id}"]`);
@@ -213,7 +213,7 @@ for (const sk of SKINS) {
   lab.className = "skin-opt";
   lab.innerHTML = `<input type="radio" name="skin" id="skin-${sk.id}" value="${sk.id}"><span class="thumb"></span><span>${sk.name}</span><small>${sk.era}</small>`;
   skinList.appendChild(lab);
-  createGauge(lab.querySelector(".thumb"), sk, sk.speed, sk.name).setValue(80);
+  createInstrument(lab.querySelector(".thumb"), sk, sk.speed, sk.name).setValue(80);
   lab.querySelector("input").addEventListener("change", () => setSkin(sk.id));
 }
 

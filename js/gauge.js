@@ -142,3 +142,47 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     },
   };
 }
+
+// Citroën CX style: a numbered band slides sideways behind a magnifier; a fixed index line marks the value.
+function createLupe(container, sk, sc, label) {
+  const uid = ++uidSeq, { w: W, h: H, wy, D, sub, count, labelMul, bigSize } = sc, x0 = -W / 2, yb = wy + H - 4;
+  let band = "";
+  for (let i = 0; i <= count * sub; i++) {
+    const x = +((i * D) / sub).toFixed(2), len = i % sub === 0 ? 11 : sub % 2 === 0 && i % (sub / 2) === 0 ? 7 : 4;
+    band += `<line x1="${x}" y1="${yb}" x2="${x}" y2="${yb - len}" stroke="${sk.ink}" stroke-width="${len > 4 ? 1.6 : 1}"/>`;
+  }
+  for (let j = 0; j <= count; j++) {
+    band += `<text x="${j * D}" y="${wy + H * 0.42}" font-size="${bigSize}" font-weight="700" fill="${sk.ink}" text-anchor="middle" dominant-baseline="central">${j * labelMul}</text>`;
+  }
+  let s = `<svg viewBox="${sc.view}" role="img" aria-label="${label}" font-family="${sk.font}"><defs>
+<clipPath id="w${uid}"><rect x="${x0}" y="${wy}" width="${W}" height="${H}" rx="5"/></clipPath>
+<linearGradient id="y${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sk.face[0]}"/><stop offset="1" stop-color="${sk.face[1]}"/></linearGradient>
+<linearGradient id="l${uid}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".6"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></linearGradient></defs>
+<rect x="${sc.house[0]}" y="${sc.house[1]}" width="${sc.house[2]}" height="${sc.house[3]}" rx="8" fill="${sk.bezel}" stroke="${sk.ring}" stroke-width="1.5"/>
+<rect x="${x0 - 3}" y="${wy - 3}" width="${W + 6}" height="${H + 6}" rx="7" fill="#0b0b0c"/>
+<rect x="${x0}" y="${wy}" width="${W}" height="${H}" rx="5" fill="url(#y${uid})"/>
+<g clip-path="url(#w${uid})"><g class="band">${band}</g>
+<rect x="${x0}" y="${wy}" width="${W}" height="${H}" fill="url(#l${uid})"/>
+<rect x="${x0}" y="${wy}" width="${W}" height="${H * 0.16}" fill="#fff" opacity=".16"/>
+<rect x="-0.9" y="${wy}" width="1.8" height="${H}" fill="${sk.accent}"/></g>`;
+  for (const t of sc.texts || []) s += `<text x="${t.x || 0}" y="${t.y}" font-size="${t.s}" font-weight="${t.w || 500}" fill="${t.c || "#cfcfca"}" text-anchor="middle" dominant-baseline="central" letter-spacing=".04em">${t.t}</text>`;
+  s += `<g class="drums"></g></svg>`;
+
+  container.innerHTML = s;
+  const svg = container.firstElementChild, bandEl = svg.querySelector(".band"), drums = svg.querySelector(".drums");
+  let lastX = NaN;
+  return {
+    setValue(v) {
+      const units = Math.max(0, Math.min(count, v / labelMul));
+      const x = +(-units * D).toFixed(2);
+      if (x !== lastX) { bandEl.setAttribute("transform", `translate(${x} 0)`); lastX = x; }
+    },
+    addDrum(y, digits, cw, ch, highlightLast, style, x = 0) {
+      return createDrum(el("g", { transform: `translate(${x} ${y})` }, drums), sk, digits, cw, ch, highlightLast, style);
+    },
+  };
+}
+
+export function createInstrument(container, sk, sc, label) {
+  return (sk.type === "lupe" ? createLupe : createGauge)(container, sk, sc, label);
+}

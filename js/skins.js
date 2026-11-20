@@ -241,6 +241,23 @@ export const SKINS = [
     },
   },
   {
+    id: "cx", name: "Citroën CX", era: "Lupentacho · 1974–1985", type: "lupe", font: "'Barlow Semi Condensed', sans-serif",
+    face: ["#f7d75a", "#e0a92a"], bezel: "#2a2b2e", ring: "#45474b", ink: "#1b1408", accent: "#d8261c",
+    drum: { frame: "#0b0b0c", cell: "#111", ink: "#eeeeea", border: "none", lastBg: "#111", lastInk: "#eeeeea" },
+    speed: {
+      view: "-90 -62 180 124", house: [-86, -58, 172, 116], w: 150, h: 76, wy: -50,
+      D: 70, sub: 5, count: 22, labelMul: 10, bigSize: 40,
+      odo: 43, odoX: -34, odoDigits: 5, trip: 43, tripX: 38,
+      texts: [{ x: 74, y: 43, s: 7, t: "km/h" }],
+    },
+    alt: {
+      view: "-90 -62 180 124", house: [-86, -58, 172, 116], w: 150, h: 76, wy: -50,
+      D: 64, sub: 10, count: 40, labelMul: 1, bigSize: 40,
+      drum: 43, drumX: 34,
+      texts: [{ x: -38, y: 43, s: 7.5, t: "HÖHE · m × 100" }],
+    },
+  },
+  {
     id: "abarth", name: "Fiat 500 Abarth", era: "595/695 · 1963–1971", font: "'Archivo Narrow', sans-serif",
     face: ["#d9262c", "#b91a20"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#f3ede0", accent: "#f3ede0",
     needle: { c: "#efe8d8", b: 7, t: 3, len: 84, tail: 0 }, hub: { r: 15, fill: "#efe8d8" },
@@ -260,6 +277,25 @@ export const SKINS = [
       rimLine: { r: 90, w: 1.8, from: 0, to: 40, hook: 10 },
       lab: { from: 0, step: 5, r: 68, size: 15, big: 5, bigSize: 15, bigR: 68, rotate: true },
       drum: 34, texts: [{ y: -32, s: 10, t: "HÖHE" }, { y: -21, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
+    id: "spider", name: "Alfa Romeo Spider", era: "1966–1993", font: "'Archivo Narrow', sans-serif",
+    face: ["#161616", "#0b0b0b"], bezel: "#b8b8b4", chrome: true, ring: "#4f4f4c", ink: "#f2f2ee", accent: "#d9261c",
+    needle: { c: "#f2f2ee", b: 3.2, t: 1.8, len: 86, tail: 16 }, hub: { r: 9, fill: "#0a0a0a" },
+    drum: { frame: "#0a0a0a", cell: "#121212", ink: "#f2f2ee", border: "none", lastBg: "#c8201e", lastInk: "#fff" },
+    speed: {
+      v0: 0, a0: -135, v1: 220, a1: 135, rest: -137, from: 0, to: 220, minor: 5, major: 10,
+      R: 96, majL: 11, majW: 2, minL: 6, minW: 1.4,
+      lab: { from: 0, step: 20, r: 74, size: 15, big: 20, bigSize: 15, bigR: 74, bigWeight: 700 },
+      odo: -32, trip: 32,
+      texts: [{ y: 56, s: 8, t: "km/h", w: 700 }],
+    },
+    alt: {
+      v0: 0, a0: -135, v1: 40, a1: 135, rest: -137, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 11, majW: 2, minL: 6, minW: 1.4,
+      lab: { from: 0, step: 5, r: 73, size: 15, big: 5, bigSize: 15, bigR: 73, bigWeight: 700 },
+      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE", w: 700 }, { y: -21, s: 7.5, t: "m × 100" }],
     },
   },
   {

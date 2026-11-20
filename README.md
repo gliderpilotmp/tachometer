@@ -1,6 +1,6 @@
 # Klassik-Tacho
 
-GPS-Tachometer mit Höhenmesser als PWA, im Stil von Mercedes W123, Mercedes 300 SL, BMW E30, Porsche 911 (G-Modell), Porsche 944, Porsche 356, VW Bus T1, VW Golf 1, Opel Rekord E, Citroën Dyane, Ferrari F40 und Fiat 500 Abarth.
+GPS-Tachometer mit Höhenmesser als PWA, im Stil von Mercedes W123, Mercedes 300 SL, BMW E30, Porsche 911 (G-Modell), Porsche 944, Porsche 356, VW Bus T1, VW Golf 1, Opel Rekord E, Citroën Dyane, Citroën CX, Alfa Romeo Spider, Ferrari F40 und Fiat 500 Abarth.
 
 - Geschwindigkeit, Gesamt- und Tageskilometer kommen aus dem GPS, die Höhe aus der GPS-Höhe.
 - Skin wechseln: über den Tacho wischen oder die Pfeile unten antippen.
