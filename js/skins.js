@@ -133,6 +133,29 @@ export const SKINS = [
     },
   },
   {
+    id: "p959", name: "Porsche 959", era: "1986–1988", font: "'Jost', sans-serif",
+    face: ["#171717", "#0c0c0c"], bezel: "#0a0a0a", ring: "#8f8f8b", ink: "#f4f4f0", accent: "#ff4419",
+    needle: { c: "#ff4d1a", b: 4.6, t: 3.6, len: 92, tail: 0 }, hub: { r: 13, fill: "#262626" },
+    screws: [[-30, 0], [30, 0]],
+    drum: { frame: "#000", cell: "#0a0a0a", ink: "#f4f3ee", border: "#6a6a6a", lastBg: "#f4f4f0", lastInk: "#111" },
+    speed: {
+      v0: 20, a0: -122, v1: 340, a1: 124, rest: -130, from: 10, to: 340, minor: 10, major: 20,
+      R: 96, majL: 12, majW: 4, minL: 7, minW: 2.6,
+      lab: { from: 20, step: 20, r: 75, size: 9.5, big: 40, bigOffset: 20, bigSize: 17, bigR: 69, bigWeight: 700, small: [180] },
+      zones: [{ from: 59.2, to: 60.8, r0: 76, r1: 96 }],
+      decor: `<g fill="none" stroke="#f4f4f0" stroke-width="1.1"><path d="M3,-64a4,4 0 0 1 0,8z"/><path d="M-1,-64h-6M-1,-61.5h-6M-1,-59h-6M-1,-56.5h-6"/></g>`,
+      dots: [[0, 94, "#1a1a1a"]],
+      odo: -22, trip: 25,
+      texts: [{ y: -38, s: 9, t: "KM", w: 700 }, { y: 64, s: 5.5, t: "ELECTRONIC", w: 600 }],
+    },
+    alt: {
+      v0: 0, a0: -122, v1: 40, a1: 124, rest: -130, from: 0, to: 40, minor: 1, major: 5,
+      R: 96, majL: 12, majW: 4, minL: 7, minW: 2.4,
+      lab: { from: 0, step: 5, r: 74, size: 10, big: 10, bigSize: 18, bigR: 68, bigWeight: 700 },
+      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE", w: 700 }, { y: -21, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
     id: "p356", name: "Porsche 356", era: "1948–1965", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#2c3647", "#222a38"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#eef1f3", accent: "#d8333a",
     bands: [

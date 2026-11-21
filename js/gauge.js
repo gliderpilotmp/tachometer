@@ -103,7 +103,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   const L = sc.lab;
   for (let v = L.from; v <= sc.to; v += L.step) {
     if (L.skip && L.skip.includes(v)) continue;
-    const big = (v - (L.bigOffset || 0)) % L.big === 0, an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
+    const big = (v - (L.bigOffset || 0)) % L.big === 0 && !(L.small || []).includes(v), an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
     const stroke = (L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "") + (L.italic ? ` font-style="italic"` : "");
     s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
