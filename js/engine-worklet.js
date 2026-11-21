@@ -19,7 +19,7 @@ class EngineProcessor extends AudioWorkletProcessor {
     this.del = new Float32Array(16384);
     this.w = 0;
     this.rpm = 0; this.load = 0.2; this.vol = 0;
-    this.lp = 0; this.clLp = 0; this.hpIn = 0; this.hpOut = 0;
+    this.lp = 0; this.clLp = 0; this.clBand = 0; this.hpIn = 0; this.hpOut = 0;
     this.boost = 0; this.tph = 0; this.blowEnv = 0; this.lastBlow = 0; this.blLp = 0;
     this.setProfile(options.processorOptions?.profile || null);
     this.port.onmessage = (e) => { if ("profile" in e.data) this.setProfile(e.data.profile); };
@@ -38,7 +38,8 @@ class EngineProcessor extends AudioWorkletProcessor {
     const out = outputs[0][0], p = this.p;
     if (!out) return true;
     if (!p) { out.fill(0); return true; }
-    const sr = sampleRate, tau = (p.tau * sr) / 1000, life = tau * 12, clTau = 0.00025 * sr, N = this.del.length;
+    const sr = sampleRate, tau = (p.tau * sr) / 1000, thTau = ((p.thumpTau || p.tau) * sr) / 1000, life = Math.max(tau, p.thump ? thTau : 0) * 12;
+    const clTau = ((p.clTau || 0.25) * sr) / 1000, clHp = p.clHp || 0.15, clLp = p.clLpHz ? 1 - Math.exp((-2 * Math.PI * p.clLpHz) / sr) : 1, N = this.del.length;
     const d1 = Math.round((p.pipe[0] * sr) / 1000), d2 = Math.round((p.pipe[1] * sr) / 1000);
     const sm = 1 - Math.exp(-1 / (0.03 * sr)), smv = 1 - Math.exp(-1 / (0.15 * sr));
     const tRpm = params.rpm[0], tLoad = params.load[0], tVol = params.vol[0], blow = params.blow[0];
@@ -67,6 +68,7 @@ class EngineProcessor extends AudioWorkletProcessor {
         if (t > life) continue;
         const u = t / tau, a = this.pa[j], n = Math.random() * 2 - 1;
         x += a * (u * Math.exp(1 - u) + p.noise * n * Math.exp(-u / 3));
+        if (p.thump) { const v = t / thTau; x += a * p.thump * v * Math.exp(1 - v); }
         c += a * n * Math.exp(-t / clTau);
         this.pt[j] = t + 1;
       }
@@ -80,9 +82,10 @@ class EngineProcessor extends AudioWorkletProcessor {
       const fc = p.lpBase + (p.lpRpm * this.rpm) / 1000 + p.lpLoad * this.load;
       this.lp += (y - this.lp) * (1 - Math.exp((-2 * Math.PI * fc) / sr));
 
-      // Diesel knock / valve train: high-passed short noise bursts at each firing.
-      this.clLp += (c - this.clLp) * 0.15;
-      let s = this.lp + p.clatter * (c - this.clLp) * 0.5;
+      // Diesel knock / valve train: band-limited noise bursts at each firing.
+      this.clLp += (c - this.clLp) * clHp;
+      this.clBand += (c - this.clLp - this.clBand) * clLp;
+      let s = this.lp + p.clatter * this.clBand * 0.5;
 
       if (p.turbo) {
         this.boost += (this.load * Math.min(1, this.rpm / p.redline) - this.boost) * boostSm;

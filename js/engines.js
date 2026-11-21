@@ -2,7 +2,14 @@
 // tau: exhaust pulse length (ms); pipe: resonance delays (ms) with feedback fb; lp*: low-pass cutoff (Hz) from base, per 1000 rpm, per load.
 export const ENGINES = {
   w123: {
-    label: "300 D · 5-Zylinder-Diesel", cyl: 5, idle: 720, redline: 4400,
+    label: "300 D · 5-Zylinder-Diesel", cyl: 5, idle: 700, redline: 4400,
+    ratios: [100, 58, 37, 27], shiftUp: [2000, 3400], shiftDown: 1100, shiftTime: 0.8,
+    tau: 1.6, thump: 0.9, thumpTau: 5, noise: 0.15, clatter: 2.4, clTau: 0.8, clHp: 0.05, clLpHz: 1500,
+    cylVar: 0.22, jitter: 0.15,
+    pipe: [7.5, 3.2], fb: [0.5, 0.3], lpBase: 380, lpRpm: 300, lpLoad: 600, drive: 1.4, gain: 1.7,
+  },
+  rekorde: {
+    label: "Reihenmotor, kernig", cyl: 5, idle: 720, redline: 4400,
     ratios: [100, 58, 37, 27], shiftUp: [2200, 3600], shiftDown: 1150, shiftTime: 0.7,
     tau: 0.9, noise: 0.25, clatter: 0.9, cylVar: 0.12, jitter: 0.1,
     pipe: [4.5, 2.1], fb: [0.45, 0.3], lpBase: 500, lpRpm: 400, lpLoad: 800, drive: 1.6, gain: 0.9,
