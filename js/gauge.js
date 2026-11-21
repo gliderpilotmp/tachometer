@@ -101,20 +101,33 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     s += `<path d="M${hx1},${hy1}L${x1},${y1}A${r},${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x2},${y2}L${hx2},${hy2}" fill="none" stroke="${ink}" stroke-width="${w}" stroke-linejoin="round"/>`;
   }
 
+  // sc.spiral: the scale winds inward, radius shrinking by k per degree from angle a (for scales longer than one turn).
+  const spR = (an) => sc.spiral.r - sc.spiral.k * (an - sc.spiral.a);
   s += `<g transform="translate(0 ${pv})">`;
-  for (const z of sc.zones || []) s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.color || (z.hatch ? `url(#p${uid})` : sk.accent)}"/>`;
+  for (const z of sc.zones || []) {
+    if (sc.spiral && z.off != null) {
+      let d = "";
+      for (let a = ang(z.from), end = ang(z.to); ; a = Math.min(end, a + 2)) {
+        const [x, y] = P(a, spR(a) + z.off);
+        d += `${d ? "L" : "M"}${x},${y}`;
+        if (a >= end) break;
+      }
+      s += `<path d="${d}" fill="none" stroke="${z.color}" stroke-width="${z.w}"/>`;
+    } else s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.color || (z.hatch ? `url(#p${uid})` : sk.accent)}"/>`;
+  }
   for (let v = sc.from; v <= sc.to; v += sc.minor) {
     if ((sc.zones || []).some((z) => !z.hatch && !z.color && v > z.from && v < z.to)) continue;
-    const M = (v - (sc.majOff || 0)) % sc.major === 0, an = ang(v), R = sc.R * k(an);
+    const M = sc.majorAt ? sc.majorAt.includes(v) : (v - (sc.majOff || 0)) % sc.major === 0, an = ang(v), R = sc.spiral ? spR(an) : sc.R * k(an);
     if (!M && sc.minorDot) { const [cx, cy] = P(an, R - sc.minL / 2); s += `<circle cx="${cx}" cy="${cy}" r="${sc.minW}" fill="${sc.tickInk || ink}"/>`; continue; }
     const [x1, y1] = P(an, R), [x2, y2] = P(an, R - (M ? sc.majL : sc.minL));
     s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sc.tickInk || ink}" stroke-width="${M ? sc.majW : sc.minW}"/>`;
   }
   const L = sc.lab;
   const labelValues = L.values || Array.from({ length: Math.floor((sc.to - L.from) / L.step) + 1 }, (_, i) => L.from + i * L.step);
-  for (const v of labelValues) {
+  for (const e of labelValues) {
+    const [v, rr] = Array.isArray(e) ? e : [e];
     if (L.skip && L.skip.includes(v)) continue;
-    const big = (v - (L.bigOffset || 0)) % L.big === 0 && !(L.small || []).includes(v), an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
+    const big = (v - (L.bigOffset || 0)) % L.big === 0 && !(L.small || []).includes(v), an = ang(v), [x, y] = P(an, rr ?? (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
     const stroke = (L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "") + (L.italic ? ` font-style="italic"` : "");
     s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${L.div ? v / L.div : v}</text>`;
@@ -127,8 +140,8 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     }
     const n = m.n || 1;
     for (let k = 0; k < n; k++) {
-      const an = ang(m.v) + (k - (n - 1) / 2) * 2.2, [x1, y1] = P(an, m.r), [x2, y2] = P(an, m.r + 5);
-      s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sk.accent}" stroke-width="${m.w || 1.6}"/>`;
+      const an = ang(m.v) + (k - (n - 1) / 2) * 2.2, [x1, y1] = P(an, m.r), [x2, y2] = P(an, m.r + (m.len || 5));
+      s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${m.c || sk.accent}" stroke-width="${m.w || 1.6}"/>`;
     }
   }
   if (sc.inner) {
@@ -154,9 +167,15 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   for (const d of sc.dots || []) s += `<circle cx="${d[0]}" cy="${d[1]}" r="5" fill="${d[2]}"/>`;
   for (const p of sk.screws || []) s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#1a1a1a" stroke="#000" stroke-width=".6"/><line x1="${p[0] - 2}" y1="${p[1]}" x2="${p[0] + 2}" y2="${p[1]}" stroke="#444" stroke-width=".8"/>`;
   s += `<g class="drums"></g>`;
-  const nd = sk.needle, pts = `${-nd.b / 2},${nd.tail} ${nd.b / 2},${nd.tail} ${nd.t / 2},${-nd.len} ${-nd.t / 2},${-nd.len}`;
+  const nd = sc.needle || sk.needle, pts = `${-nd.b / 2},${nd.tail} ${nd.b / 2},${nd.tail} ${nd.t / 2},${-nd.len} ${-nd.t / 2},${-nd.len}`;
   s += `<g${sc.clip ? ` clip-path="url(#w${uid})"` : ""}><g transform="translate(0 ${pv})">`;
-  s += `<g class="needle"><polygon points="${pts}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${pts}" fill="${nd.c}"/></g>`;
+  if (nd.tailC) {
+    // Pointer with a separate dark counterweight ending in a round knob.
+    const main = `${-nd.b / 2},0 ${nd.b / 2},0 ${nd.t / 2},${-nd.len} 0,${-nd.len - nd.t} ${-nd.t / 2},${-nd.len}`;
+    const tail = `${-nd.b / 2},0 ${nd.b / 2},0 ${nd.tb / 2},${nd.tail} ${-nd.tb / 2},${nd.tail}`;
+    s += `<g class="needle"><g fill="#000" opacity=".4" transform="translate(1.6 2.2)"><polygon points="${main}"/><polygon points="${tail}"/><circle cy="${nd.tail}" r="${nd.knob}"/></g>`;
+    s += `<polygon points="${tail}" fill="${nd.tailC}"/><circle cy="${nd.tail}" r="${nd.knob}" fill="${nd.tailC}"/><polygon points="${main}" fill="${nd.c}"/></g>`;
+  } else s += `<g class="needle"><polygon points="${pts}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${pts}" fill="${nd.c}"/></g>`;
   if (sc.hand2) {
     const h = sc.hand2, p2 = `${-h.b / 2},${h.tail} ${h.b / 2},${h.tail} ${h.t / 2},${-h.len} ${-h.t / 2},${-h.len}`;
     s += `<g class="needle2"><polygon points="${p2}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${p2}" fill="${h.c}"/></g>`;
