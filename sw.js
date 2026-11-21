@@ -1,4 +1,4 @@
-const VERSION = "tacho-v18";
+const VERSION = "tacho-v19";
 const SHELL = [
   "./",
   "index.html",
@@ -6,6 +6,9 @@ const SHELL = [
   "js/app.js",
   "js/gauge.js",
   "js/skins.js",
+  "js/engine.js",
+  "js/engines.js",
+  "js/engine-worklet.js",
   "manifest.webmanifest",
   "icons/icon-192.png",
   "icons/icon-512.png",

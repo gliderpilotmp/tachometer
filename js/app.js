@@ -1,10 +1,12 @@
 import { SKINS } from "./skins.js";
 import { createInstrument } from "./gauge.js";
+import { ENGINES } from "./engines.js";
+import { EngineSound } from "./engine.js";
 
 const $ = (id) => document.getElementById(id);
 const STORE_KEY = "klassik-tacho";
 
-const state = { skin: "w123", odo: 0, trip: 0, altOffset: 0, demo: false };
+const state = { skin: "w123", odo: 0, trip: 0, altOffset: 0, demo: false, sound: false, soundVol: 0.7 };
 try { Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch {}
 let dirty = false;
 const save = () => {
@@ -13,6 +15,15 @@ const save = () => {
 };
 setInterval(save, 3000);
 addEventListener("pagehide", save);
+
+// ---------- engine sound ----------
+const engine = new EngineSound();
+engine.setVolume(state.soundVol);
+function refreshSoundHint(sk) {
+  const e = ENGINES[sk.id];
+  const withSound = SKINS.filter((s) => ENGINES[s.id]).map((s) => s.name).join(", ");
+  $("soundHint").textContent = e ? `${sk.name}: ${e.label}. Gänge und Drehzahl folgen deiner Geschwindigkeit.` : `${sk.name} hat noch keinen Motorsound. Verfügbar bei: ${withSound}.`;
+}
 
 // ---------- dashboard ----------
 let dash = null;
@@ -34,6 +45,8 @@ function buildDash() {
   $("vario").hidden = !hasVario;
   $("vario").innerHTML = "";
   dash.vario = hasVario ? createInstrument($("vario"), sk, sk.vario, `Variometer im Stil ${sk.name}`) : null;
+  engine.setProfile(ENGINES[sk.id] || null);
+  refreshSoundHint(sk);
   $("skinName").textContent = sk.name;
   const radio = document.querySelector(`input[name="skin"][value="${sk.id}"]`);
   if (radio) radio.checked = true;
@@ -158,6 +171,7 @@ function frame(now) {
   dash.trip(shown.trip * 10);
   dash.alti.setValue(shown.alt == null ? -10 : Math.max(0, shown.alt) / 100);
   if (dash.vario) dash.vario.setValue(shown.vario);
+  engine.update(shown.speed, dt);
   dash.alt(shown.alt == null ? 0 : Math.max(0, Math.round(shown.alt)));
 
   if (now - statusTick > 500) { updateStatus(now); statusTick = now; }
@@ -175,7 +189,8 @@ async function keepAwake() {
 }
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && !wakeLock && started) keepAwake();
-  if (document.visibilityState === "hidden") save();
+  if (document.visibilityState === "hidden") { save(); engine.pause(); }
+  else engine.resume();
 });
 function toggleFullscreen(forceOn) {
   const d = document;
@@ -193,6 +208,7 @@ function start(demo) {
   toggleFullscreen(true);
   keepAwake();
   if (!demo) startGps();
+  if (state.sound) engine.enable().catch(() => {});
   armIdle();
 }
 $("startBtn").addEventListener("click", () => start(false));
@@ -242,6 +258,8 @@ function refreshReadouts() {
 $("openSettings").addEventListener("click", () => {
   $("altOffset").value = Math.round(state.altOffset);
   $("demoToggle").checked = state.demo;
+  $("soundToggle").checked = state.sound;
+  $("soundVol").value = state.soundVol;
   refreshReadouts();
   $("settings").showModal();
 });
@@ -288,6 +306,15 @@ $("demoToggle").addEventListener("change", (e) => {
     if (target.alt == null) shown.alt = null;
     startGps();
   }
+});
+$("soundToggle").addEventListener("change", (e) => {
+  state.sound = e.target.checked; dirty = true;
+  if (state.sound) engine.enable().catch(() => { $("soundHint").textContent = "Ton lässt sich in diesem Browser nicht starten."; });
+  else engine.disable();
+});
+$("soundVol").addEventListener("input", (e) => {
+  state.soundVol = parseFloat(e.target.value); dirty = true;
+  engine.setVolume(state.soundVol);
 });
 $("fullscreenBtn").addEventListener("click", () => toggleFullscreen(false));
 

@@ -77,6 +77,13 @@
       <p class="fine" id="resetConfirm" hidden>Nochmal tippen, um den Gesamtzähler zu löschen.</p>
     </fieldset>
     <fieldset>
+      <legend>Motorsound</legend>
+      <label class="check"><input id="soundToggle" type="checkbox"> Motorsound passend zur Geschwindigkeit</label>
+      <label for="soundVol">Lautstärke</label>
+      <input id="soundVol" type="range" min="0" max="1" step="0.05" value="0.7">
+      <p class="fine" id="soundHint"></p>
+    </fieldset>
+    <fieldset>
       <legend>Anzeige</legend>
       <label class="check"><input id="demoToggle" type="checkbox"> Demo-Modus (simulierte Fahrt)</label>
       <button id="fullscreenBtn" type="button">Vollbild</button>

@@ -1,0 +1,111 @@
+// Procedural engine: every cylinder fires an exhaust pulse; pipe resonances, filtering and soft clipping shape the timbre.
+const POOL = 32;
+
+class EngineProcessor extends AudioWorkletProcessor {
+  static get parameterDescriptors() {
+    return [
+      { name: "rpm", defaultValue: 800, minValue: 0, maxValue: 12000, automationRate: "k-rate" },
+      { name: "load", defaultValue: 0.2, minValue: 0, maxValue: 1, automationRate: "k-rate" },
+      { name: "vol", defaultValue: 0, minValue: 0, maxValue: 1, automationRate: "k-rate" },
+      { name: "blow", defaultValue: 0, minValue: 0, maxValue: 1, automationRate: "k-rate" },
+    ];
+  }
+
+  constructor(options) {
+    super();
+    this.pa = new Float32Array(POOL);
+    this.pt = new Float32Array(POOL).fill(1e9);
+    this.pi = 0;
+    this.del = new Float32Array(16384);
+    this.w = 0;
+    this.rpm = 0; this.load = 0.2; this.vol = 0;
+    this.lp = 0; this.clLp = 0; this.hpIn = 0; this.hpOut = 0;
+    this.boost = 0; this.tph = 0; this.blowEnv = 0; this.lastBlow = 0; this.blLp = 0;
+    this.setProfile(options.processorOptions?.profile || null);
+    this.port.onmessage = (e) => { if ("profile" in e.data) this.setProfile(e.data.profile); };
+  }
+
+  setProfile(p) {
+    this.p = p;
+    if (!p) return;
+    this.amps = Float32Array.from({ length: p.cyl }, () => 1 + (Math.random() * 2 - 1) * p.cylVar);
+    this.offsets = p.offsets || Array.from({ length: p.cyl }, (_, i) => i / p.cyl);
+    this.rpm = p.idle; this.cyc = 0; this.base = 0; this.k = 0;
+    this.del.fill(0);
+  }
+
+  process(_, outputs, params) {
+    const out = outputs[0][0], p = this.p;
+    if (!out) return true;
+    if (!p) { out.fill(0); return true; }
+    const sr = sampleRate, tau = (p.tau * sr) / 1000, life = tau * 12, clTau = 0.00025 * sr, N = this.del.length;
+    const d1 = Math.round((p.pipe[0] * sr) / 1000), d2 = Math.round((p.pipe[1] * sr) / 1000);
+    const sm = 1 - Math.exp(-1 / (0.03 * sr)), smv = 1 - Math.exp(-1 / (0.15 * sr));
+    const tRpm = params.rpm[0], tLoad = params.load[0], tVol = params.vol[0], blow = params.blow[0];
+    if (blow > 0.5 && this.lastBlow <= 0.5) this.blowEnv = 1;
+    this.lastBlow = blow;
+    const blowDecay = Math.exp(-1 / (0.35 * sr)), boostSm = 1 - Math.exp(-1 / (0.6 * sr));
+
+    for (let i = 0; i < out.length; i++) {
+      this.rpm += (tRpm - this.rpm) * sm;
+      this.load += (tLoad - this.load) * sm;
+      this.vol += (tVol - this.vol) * smv;
+
+      // Four-stroke: one full firing cycle every two crank revolutions.
+      this.cyc += this.rpm / 120 / sr;
+      while (this.cyc >= this.base + this.offsets[this.k]) {
+        const j = this.pi;
+        this.pi = (this.pi + 1) % POOL;
+        this.pa[j] = this.amps[this.k] * (1 + (Math.random() - 0.5) * p.jitter) * (0.3 + 0.7 * this.load);
+        this.pt[j] = 0;
+        if (++this.k === p.cyl) { this.k = 0; this.base += 1; }
+      }
+
+      let x = 0, c = 0;
+      for (let j = 0; j < POOL; j++) {
+        const t = this.pt[j];
+        if (t > life) continue;
+        const u = t / tau, a = this.pa[j], n = Math.random() * 2 - 1;
+        x += a * (u * Math.exp(1 - u) + p.noise * n * Math.exp(-u / 3));
+        c += a * n * Math.exp(-t / clTau);
+        this.pt[j] = t + 1;
+      }
+      x *= 0.5;
+
+      // Exhaust pipe resonances (two feedback combs).
+      const y = x + p.fb[0] * this.del[(this.w - d1 + N) % N] + p.fb[1] * this.del[(this.w - d2 + N) % N];
+      this.del[this.w] = y;
+      this.w = (this.w + 1) % N;
+
+      const fc = p.lpBase + (p.lpRpm * this.rpm) / 1000 + p.lpLoad * this.load;
+      this.lp += (y - this.lp) * (1 - Math.exp((-2 * Math.PI * fc) / sr));
+
+      // Diesel knock / valve train: high-passed short noise bursts at each firing.
+      this.clLp += (c - this.clLp) * 0.15;
+      let s = this.lp + p.clatter * (c - this.clLp) * 0.5;
+
+      if (p.turbo) {
+        this.boost += (this.load * Math.min(1, this.rpm / p.redline) - this.boost) * boostSm;
+        this.tph += (1800 + this.rpm * 0.55) / sr;
+        if (this.tph > 1) this.tph -= 1;
+        s += Math.sin(2 * Math.PI * this.tph) * this.boost * this.boost * 0.05;
+        if (this.blowEnv > 0.001) {
+          const n = Math.random() * 2 - 1;
+          this.blLp += (n - this.blLp) * 0.4;
+          s += (n - this.blLp) * this.blowEnv * 0.35;
+          this.blowEnv *= blowDecay;
+        }
+      }
+
+      s = Math.tanh(s * p.drive);
+      const o = s - this.hpIn + 0.995 * this.hpOut;
+      this.hpIn = s;
+      this.hpOut = o;
+      out[i] = o * p.gain * this.vol;
+    }
+    for (let ch = 1; ch < outputs[0].length; ch++) outputs[0][ch].set(out);
+    return true;
+  }
+}
+
+registerProcessor("engine", EngineProcessor);
