@@ -61,7 +61,17 @@ function createDrum(group, sk, n, cw, ch, highlightLast, style) {
 
 export function createGauge(container, sk, sc, label) {
   const uid = ++uidSeq, ink = sk.ink;
-  const ang = (v) => sc.a0 + ((v - sc.v0) * (sc.a1 - sc.a0)) / (sc.v1 - sc.v0);
+  // sc.map: [value, angle] pairs for non-linear scales such as an airspeed indicator.
+  const ang = sc.map
+    ? (v) => {
+        const m = sc.map;
+        if (v <= m[0][0]) return m[0][1];
+        for (let i = 1; i < m.length; i++) {
+          if (v <= m[i][0]) { const [v0, a0] = m[i - 1], [v1, a1] = m[i]; return a0 + ((v - v0) * (a1 - a0)) / (v1 - v0); }
+        }
+        return m[m.length - 1][1];
+      }
+    : (v) => sc.a0 + ((v - sc.v0) * (sc.a1 - sc.a0)) / (sc.v1 - sc.v0);
   const n = sk.squircle;
   const outline = (r, attrs) => (n ? `<path d="${squircle(r, n)}" ${attrs}/>` : `<circle r="${r}" ${attrs}/>`);
   const k = (an) => {
@@ -92,23 +102,29 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   }
 
   s += `<g transform="translate(0 ${pv})">`;
-  for (const z of sc.zones || []) s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.hatch ? `url(#p${uid})` : sk.accent}"/>`;
+  for (const z of sc.zones || []) s += `<path d="${arc(ang(z.from), ang(z.to), z.r0, z.r1)}" fill="${z.color || (z.hatch ? `url(#p${uid})` : sk.accent)}"/>`;
   for (let v = sc.from; v <= sc.to; v += sc.minor) {
-    if ((sc.zones || []).some((z) => !z.hatch && v > z.from && v < z.to)) continue;
+    if ((sc.zones || []).some((z) => !z.hatch && !z.color && v > z.from && v < z.to)) continue;
     const M = (v - (sc.majOff || 0)) % sc.major === 0, an = ang(v), R = sc.R * k(an);
     if (!M && sc.minorDot) { const [cx, cy] = P(an, R - sc.minL / 2); s += `<circle cx="${cx}" cy="${cy}" r="${sc.minW}" fill="${sc.tickInk || ink}"/>`; continue; }
     const [x1, y1] = P(an, R), [x2, y2] = P(an, R - (M ? sc.majL : sc.minL));
     s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sc.tickInk || ink}" stroke-width="${M ? sc.majW : sc.minW}"/>`;
   }
   const L = sc.lab;
-  for (let v = L.from; v <= sc.to; v += L.step) {
+  const labelValues = L.values || Array.from({ length: Math.floor((sc.to - L.from) / L.step) + 1 }, (_, i) => L.from + i * L.step);
+  for (const v of labelValues) {
     if (L.skip && L.skip.includes(v)) continue;
     const big = (v - (L.bigOffset || 0)) % L.big === 0 && !(L.small || []).includes(v), an = ang(v), [x, y] = P(an, (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
     const stroke = (L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "") + (L.italic ? ` font-style="italic"` : "");
-    s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${v}</text>`;
+    s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${L.div ? v / L.div : v}</text>`;
   }
   for (const m of sc.marks || []) {
+    if (m.tri) {
+      const an = ang(m.v), [x, y] = P(an, m.r), [x2, y2] = P(an - 3.2, m.r + 9), [x3, y3] = P(an + 3.2, m.r + 9);
+      s += `<polygon points="${x},${y} ${x2},${y2} ${x3},${y3}" fill="${m.c || sk.accent}"/>`;
+      continue;
+    }
     const n = m.n || 1;
     for (let k = 0; k < n; k++) {
       const an = ang(m.v) + (k - (n - 1) / 2) * 2.2, [x1, y1] = P(an, m.r), [x2, y2] = P(an, m.r + 5);
@@ -128,7 +144,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     }
     for (let w = I.from; w <= I.to; w += I.step) {
       const [x, y] = P(ia(w), I.r);
-      s += `<text x="${x}" y="${y}" font-size="${I.size}" font-family="${I.font || sk.font}" fill="${I.color}" text-anchor="middle" dominant-baseline="central">${w}</text>`;
+      s += `<text x="${x}" y="${y}" font-size="${I.size}" font-weight="${I.weight || 400}" font-family="${I.font || sk.font}" fill="${I.color}" text-anchor="middle" dominant-baseline="central">${w}</text>`;
     }
   }
   s += `</g>`;
@@ -141,6 +157,10 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   const nd = sk.needle, pts = `${-nd.b / 2},${nd.tail} ${nd.b / 2},${nd.tail} ${nd.t / 2},${-nd.len} ${-nd.t / 2},${-nd.len}`;
   s += `<g${sc.clip ? ` clip-path="url(#w${uid})"` : ""}><g transform="translate(0 ${pv})">`;
   s += `<g class="needle"><polygon points="${pts}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${pts}" fill="${nd.c}"/></g>`;
+  if (sc.hand2) {
+    const h = sc.hand2, p2 = `${-h.b / 2},${h.tail} ${h.b / 2},${h.tail} ${h.t / 2},${-h.len} ${-h.t / 2},${-h.len}`;
+    s += `<g class="needle2"><polygon points="${p2}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${p2}" fill="${h.c}"/></g>`;
+  }
   if (sk.hub.r) s += `<circle r="${sk.hub.r}" fill="${sk.hub.silver ? `url(#h${uid})` : sk.hub.fill}" stroke="#000" stroke-width=".8"/>`;
   s += `</g></g>`;
   if (!sc.frame) s += `<ellipse cx="0" cy="-52" rx="80" ry="44" fill="url(#g${uid})" pointer-events="none"/>`;
@@ -148,9 +168,17 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
 
   container.innerHTML = s;
   const svg = container.firstElementChild, needle = svg.querySelector(".needle"), drums = svg.querySelector(".drums");
+  const needle2 = svg.querySelector(".needle2");
   let lastA = NaN;
   return {
     setValue(v) {
+      if (sc.hands) {
+        // Two-hand altimeter: long hand one turn per 1000 m, short hand one turn per 10 km; v is in units of 100 m.
+        const m = Math.max(0, v * 100), a = +ang(m % 1000).toFixed(2);
+        if (a !== lastA) { needle.setAttribute("transform", `rotate(${a})`); lastA = a; }
+        needle2.setAttribute("transform", `rotate(${(sc.a0 + m * 0.036).toFixed(2)})`);
+        return;
+      }
       const a = +Math.max(sc.rest, Math.min(sc.a1 + 3, ang(v))).toFixed(2);
       if (a !== lastA) { needle.setAttribute("transform", `rotate(${a})`); lastA = a; }
     },

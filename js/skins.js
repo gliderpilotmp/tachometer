@@ -17,6 +17,12 @@ const LAMP_BAR = `<path d="M-46,66Q0,58 46,66L42,90Q0,97 -42,90Z" fill="#26272a"
 <g fill="#4a4b4f"><circle cx="-24" cy="78" r="6.5"/><circle cx="0" cy="79" r="6.5"/><circle cx="24" cy="78" r="6.5"/></g>
 <g fill="#77787c"><path d="M-27,78L-21,74V82Z"/><path d="M27,78L21,74V82Z"/><circle cx="0" cy="79" r="2.6"/></g>`;
 
+// Glider panel instruments: square housing with brass screws.
+const SQ_BOX = "M-96,-108H96Q108,-108 108,-96V96Q108,108 96,108H-96Q-108,108 -108,96V-96Q-108,-108 -96,-108Z";
+const ROUND_FACE = "M-97,0A97,97 0 1 0 97,0A97,97 0 1 0 -97,0Z";
+const SCREW = (x, y) => `<circle cx="${x}" cy="${y}" r="7" fill="#c9a54e"/><circle cx="${x}" cy="${y}" r="4.2" fill="#141414"/>`;
+const GLIDER_RIM = `<circle r="98.5" fill="none" stroke="#2c2c2c" stroke-width="3"/>`;
+
 export const SKINS = [
   {
     id: "w123", name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
@@ -418,6 +424,42 @@ export const SKINS = [
       R: 96, majL: 13, majW: 2.4, minL: 7, minW: 1.6,
       lab: { from: 0, step: 5, r: 73, size: 10, big: 10, bigSize: 19, bigR: 68 },
       drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE" }, { y: -20, s: 7.5, t: "m × 100" }],
+    },
+  },
+  {
+    id: "arcus", name: "Arcus · Winter", era: "Segelflug-Instrumente", font: "'Barlow', sans-serif",
+    face: ["#151515", "#0d0d0d"], bezel: "#121212", ring: "#2c2c2c", ink: "#f2f2ee", accent: "#f2c230",
+    needle: { c: "#f4f4f0", b: 3.4, t: 1.6, len: 92, tail: 30 }, hub: { r: 7, fill: "#1a1a1a" },
+    drum: { frame: "#000", cell: "#0e0e0e", ink: "#f2f2ee", border: "#555", lastBg: "#0e0e0e", lastInk: "#f2f2ee" },
+    speed: {
+      frame: { bezel: SQ_BOX, face: ROUND_FACE },
+      under: GLIDER_RIM + SCREW(-92, -92) + SCREW(92, -92) + SCREW(-92, 92) + SCREW(92, 92),
+      map: [[30, -172], [40, -151], [50, -128], [60, -105], [70, -77], [80, -50], [90, -25], [100, 0], [110, 20], [120, 40],
+        [130, 62], [140, 84], [150, 106], [175, 145], [200, 178], [225, 218], [250, 254], [275, 280], [300, 300]],
+      a1: 300, rest: -172, from: 40, to: 200, minor: 10, major: 50,
+      R: 95, majL: 12, majW: 2.4, minL: 8, minW: 2,
+      zones: [
+        { from: 100, to: 180, r0: 80, r1: 84.5, color: "#14a05c" },
+        { from: 180, to: 200, r0: 80, r1: 84.5, color: "#f2c230" },
+        { from: 200, to: 280, r0: 52, r1: 56.5, color: "#f2c230" },
+        { from: 279, to: 281.5, r0: 46, r1: 62, color: "#e0261c" },
+      ],
+      lab: { values: [40, 60, 80, 100, 120, 150], from: 0, step: 1, r: 66, size: 14, big: 1, bigSize: 14, bigR: 66, bigWeight: 600 },
+      inner: { factor: 1, from: 200, to: 300, minor: 10, step: 50, rings: [], R: 51, L: 5, w: 1.6, r: 38, size: 12, weight: 600, color: "#f2f2ee" },
+      marks: [{ v: 95, r: 86, tri: true }],
+      odo: null, trip: null,
+      texts: [{ y: 21, s: 8, t: "km/h" }],
+    },
+    alt: {
+      frame: { bezel: SQ_BOX, face: ROUND_FACE },
+      under: GLIDER_RIM + SCREW(-92, -92) + SCREW(92, -92) + SCREW(92, 92) +
+        `<circle cx="-90" cy="90" r="14" fill="#1c1c1c" stroke="#3a3a3a" stroke-width="1.5"/>`,
+      hands: true, hand2: { c: "#f4f4f0", b: 6, t: 3, len: 52, tail: 8 },
+      v0: 0, a0: 180, v1: 1000, a1: 540, rest: 180, from: 0, to: 980, minor: 20, major: 100,
+      R: 95, majL: 12, majW: 2.4, minL: 6, minW: 1.4,
+      lab: { from: 0, step: 100, div: 100, r: 72, size: 19, big: 100, bigSize: 19, bigR: 72, bigWeight: 600 },
+      drum: 0, drumX: 50,
+      texts: [{ x: -2, y: 30, s: 9, t: "Höhe" }, { x: -2, y: 41, s: 9, t: "km" }, { y: 57, s: 5.5, t: "100 m" }],
     },
   },
 ];
