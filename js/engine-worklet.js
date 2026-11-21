@@ -19,13 +19,15 @@ class EngineProcessor extends AudioWorkletProcessor {
     this.del = new Float32Array(16384);
     this.w = 0;
     this.rpm = 0; this.load = 0.2; this.vol = 0;
-    this.lp = 0; this.clLp = 0; this.clBand = 0; this.hpIn = 0; this.hpOut = 0;
+    this.lp = 0; this.clLp = 0; this.clBand = 0; this.dcIn = 0; this.dcOut = 0; this.hpIn = 0; this.hpOut = 0;
     this.boost = 0; this.tph = 0; this.blowEnv = 0; this.lastBlow = 0; this.blLp = 0;
     this.setProfile(options.processorOptions?.profile || null);
     this.port.onmessage = (e) => { if ("profile" in e.data) this.setProfile(e.data.profile); };
   }
 
   setProfile(p) {
+    // Pipe feedback must stay below 1 in total, or the resonances run away and the clipper sticks at full scale.
+    if (p) { const f = p.fb[0] + p.fb[1]; if (f > 0.92) p = { ...p, fb: p.fb.map((v) => (v * 0.92) / f) }; }
     this.p = p;
     if (!p) return;
     this.amps = Float32Array.from({ length: p.cyl }, () => 1 + (Math.random() * 2 - 1) * p.cylVar);
@@ -72,7 +74,12 @@ class EngineProcessor extends AudioWorkletProcessor {
         c += a * n * Math.exp(-t / clTau);
         this.pt[j] = t + 1;
       }
-      x *= 0.5;
+      // Overlapping one-sided pulses build up a large DC offset under load; remove it before the pipes and the
+      // soft clipper, otherwise the clipper saturates into a flat line and the engine falls silent when accelerating.
+      const xd = x * 0.5 - this.dcIn + 0.998 * this.dcOut;
+      this.dcIn = x * 0.5;
+      this.dcOut = xd;
+      x = xd;
 
       // Exhaust pipe resonances (two feedback combs).
       const y = x + p.fb[0] * this.del[(this.w - d1 + N) % N] + p.fb[1] * this.del[(this.w - d2 + N) % N];
