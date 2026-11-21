@@ -23,6 +23,14 @@ const ROUND_FACE = "M-97,0A97,97 0 1 0 97,0A97,97 0 1 0 -97,0Z";
 const SCREW = (x, y) => `<circle cx="${x}" cy="${y}" r="7" fill="#c9a54e"/><circle cx="${x}" cy="${y}" r="4.2" fill="#141414"/>`;
 const GLIDER_RIM = `<circle r="98.5" fill="none" stroke="#2c2c2c" stroke-width="3"/>`;
 
+const ALT_BOX = "M-80,-108H96Q108,-108 108,-96V96Q108,108 96,108H-96Q-108,108 -108,96V-80Z";
+const ALT_KNOB = `<circle cx="-93" cy="93" r="16" fill="#141414" stroke="#2e2e2e" stroke-width="2"/><circle cx="-93" cy="93" r="11" fill="#0a0a0a"/><ellipse cx="-97" cy="88" rx="5" ry="3" fill="#fff" opacity=".12"/>`;
+// Pressure-setting window (Kollsman window) with its hPa scale, as on the original dial.
+const KOLLSMAN = `<rect x="42" y="-15.5" width="31" height="31" rx="2" fill="#050505" stroke="#555" stroke-width=".8"/>
+<g fill="#eee" font-size="6" text-anchor="middle" dominant-baseline="central"><text x="52" y="-10">950</text><text x="52" y="0.5">945</text><text x="51" y="10.5">940</text></g>
+<g stroke="#eee" stroke-width=".7">${Array.from({ length: 15 }, (_, i) => `<line x1="${i % 5 === 2 ? 61 : 64}" y1="${-14 + i * 2}" x2="69" y2="${-14 + i * 2}"/>`).join("")}</g>
+<polygon points="75,-2.5 71,0 75,2.5" fill="#eee"/>`;
+
 export const SKINS = [
   {
     id: "w123", name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
@@ -468,15 +476,27 @@ export const SKINS = [
       ],
     },
     alt: {
-      frame: { bezel: SQ_BOX, face: ROUND_FACE },
-      under: GLIDER_RIM + SCREW(-92, -92) + SCREW(92, -92) + SCREW(92, 92) +
-        `<circle cx="-90" cy="90" r="14" fill="#1c1c1c" stroke="#3a3a3a" stroke-width="1.5"/>`,
-      hands: true, hand2: { c: "#f4f4f0", b: 6, t: 3, len: 52, tail: 8 },
-      v0: 0, a0: 180, v1: 1000, a1: 540, rest: 180, from: 0, to: 980, minor: 20, major: 100,
-      R: 95, majL: 12, majW: 2.4, minL: 6, minW: 1.4,
-      lab: { from: 0, step: 100, div: 100, r: 72, size: 19, big: 100, bigSize: 19, bigR: 72, bigWeight: 600 },
-      drum: 0, drumX: 50,
-      texts: [{ x: -2, y: 30, s: 9, t: "Höhe" }, { x: -2, y: 41, s: 9, t: "km" }, { y: 57, s: 5.5, t: "100 m" }],
+      frame: { bezel: ALT_BOX, face: ROUND_FACE },
+      under: GLIDER_RIM + SCREW(-88, -88) + SCREW(92, -92) + SCREW(92, 92) + ALT_KNOB,
+      hands: true,
+      needle: { c: "#f4f4f0", b: 3.4, t: 1.8, len: 84, tail: 20, tb: 2.4, tailC: "#1c1c1c", knob: 0 },
+      hand2: { c: "#f4f4f0", b: 5.2, t: 1.6, len: 63, tail: 16, tb: 3, tailC: "#1c1c1c", knob: 0 },
+      v0: 0, a0: 180, v1: 1000, a1: 540, rest: 180, from: 0, to: 990, minor: 10, major: 100, mid: 50,
+      R: 95, majL: 13, majW: 2.6, midL: 9, midW: 1.8, minL: 6, minW: 1.3,
+      lab: {
+        values: [0, 100, 200, 300, 400, 500, 600, [700, 71], [800, 71], 900],
+        from: 0, step: 100, div: 100, r: 67, size: 17, big: 100, bigSize: 17, bigR: 67, bigWeight: 700,
+      },
+      decor: KOLLSMAN + `<g fill="#2b2b2b"><circle cx="-34" cy="25.5" r="3.4"/><circle cx="30.6" cy="-29" r="3.4"/></g>`,
+      drum: null,
+      texts: [
+        { y: -46, s: 10, t: "winter", w: 700 },
+        { x: -42, y: 0, s: 7.5, t: "WNr. 221500", w: 600 },
+        { x: 24, y: 0, s: 5.5, t: "SNr. 422", w: 600 },
+        { x: 2, y: 25, s: 11, t: "Höhe" },
+        { x: 2, y: 39, s: 11, t: "km" },
+        { x: 23, y: 68, s: 5, t: "100 m" },
+      ],
     },
   },
 ];

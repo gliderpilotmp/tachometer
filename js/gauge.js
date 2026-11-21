@@ -119,8 +119,9 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     if ((sc.zones || []).some((z) => !z.hatch && !z.color && v > z.from && v < z.to)) continue;
     const M = sc.majorAt ? sc.majorAt.includes(v) : (v - (sc.majOff || 0)) % sc.major === 0, an = ang(v), R = sc.spiral ? spR(an) : sc.R * k(an);
     if (!M && sc.minorDot) { const [cx, cy] = P(an, R - sc.minL / 2); s += `<circle cx="${cx}" cy="${cy}" r="${sc.minW}" fill="${sc.tickInk || ink}"/>`; continue; }
-    const [x1, y1] = P(an, R), [x2, y2] = P(an, R - (M ? sc.majL : sc.minL));
-    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sc.tickInk || ink}" stroke-width="${M ? sc.majW : sc.minW}"/>`;
+    const mid = !M && sc.mid && v % sc.mid === 0, len = M ? sc.majL : mid ? sc.midL : sc.minL, wid = M ? sc.majW : mid ? sc.midW : sc.minW;
+    const [x1, y1] = P(an, R), [x2, y2] = P(an, R - len);
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${sc.tickInk || ink}" stroke-width="${wid}"/>`;
   }
   const L = sc.lab;
   const labelValues = L.values || Array.from({ length: Math.floor((sc.to - L.from) / L.step) + 1 }, (_, i) => L.from + i * L.step);
@@ -167,19 +168,21 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   for (const d of sc.dots || []) s += `<circle cx="${d[0]}" cy="${d[1]}" r="5" fill="${d[2]}"/>`;
   for (const p of sk.screws || []) s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#1a1a1a" stroke="#000" stroke-width=".6"/><line x1="${p[0] - 2}" y1="${p[1]}" x2="${p[0] + 2}" y2="${p[1]}" stroke="#444" stroke-width=".8"/>`;
   s += `<g class="drums"></g>`;
-  const nd = sc.needle || sk.needle, pts = `${-nd.b / 2},${nd.tail} ${nd.b / 2},${nd.tail} ${nd.t / 2},${-nd.len} ${-nd.t / 2},${-nd.len}`;
+  const needleSvg = (nd, cls) => {
+    if (nd.tailC) {
+      // Pointer with a separate dark counterweight, optionally ending in a round knob.
+      const main = `${-nd.b / 2},0 ${nd.b / 2},0 ${nd.t / 2},${-nd.len} 0,${-nd.len - nd.t} ${-nd.t / 2},${-nd.len}`;
+      const tail = `${-nd.b / 2},0 ${nd.b / 2},0 ${nd.tb / 2},${nd.tail} ${-nd.tb / 2},${nd.tail}`;
+      const knob = nd.knob ? `<circle cy="${nd.tail}" r="${nd.knob}"/>` : "";
+      return `<g class="${cls}"><g fill="#000" opacity=".4" transform="translate(1.6 2.2)"><polygon points="${main}"/><polygon points="${tail}"/>${knob}</g>` +
+        `<g fill="${nd.tailC}"><polygon points="${tail}"/>${knob}</g><polygon points="${main}" fill="${nd.c}"/></g>`;
+    }
+    const pts = `${-nd.b / 2},${nd.tail} ${nd.b / 2},${nd.tail} ${nd.t / 2},${-nd.len} ${-nd.t / 2},${-nd.len}`;
+    return `<g class="${cls}"><polygon points="${pts}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${pts}" fill="${nd.c}"/></g>`;
+  };
   s += `<g${sc.clip ? ` clip-path="url(#w${uid})"` : ""}><g transform="translate(0 ${pv})">`;
-  if (nd.tailC) {
-    // Pointer with a separate dark counterweight ending in a round knob.
-    const main = `${-nd.b / 2},0 ${nd.b / 2},0 ${nd.t / 2},${-nd.len} 0,${-nd.len - nd.t} ${-nd.t / 2},${-nd.len}`;
-    const tail = `${-nd.b / 2},0 ${nd.b / 2},0 ${nd.tb / 2},${nd.tail} ${-nd.tb / 2},${nd.tail}`;
-    s += `<g class="needle"><g fill="#000" opacity=".4" transform="translate(1.6 2.2)"><polygon points="${main}"/><polygon points="${tail}"/><circle cy="${nd.tail}" r="${nd.knob}"/></g>`;
-    s += `<polygon points="${tail}" fill="${nd.tailC}"/><circle cy="${nd.tail}" r="${nd.knob}" fill="${nd.tailC}"/><polygon points="${main}" fill="${nd.c}"/></g>`;
-  } else s += `<g class="needle"><polygon points="${pts}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${pts}" fill="${nd.c}"/></g>`;
-  if (sc.hand2) {
-    const h = sc.hand2, p2 = `${-h.b / 2},${h.tail} ${h.b / 2},${h.tail} ${h.t / 2},${-h.len} ${-h.t / 2},${-h.len}`;
-    s += `<g class="needle2"><polygon points="${p2}" fill="#000" opacity=".4" transform="translate(1.6 2.2)"/><polygon points="${p2}" fill="${h.c}"/></g>`;
-  }
+  s += needleSvg(sc.needle || sk.needle, "needle");
+  if (sc.hand2) s += needleSvg(sc.hand2, "needle2");
   if (sk.hub.r) s += `<circle r="${sk.hub.r}" fill="${sk.hub.silver ? `url(#h${uid})` : sk.hub.fill}" stroke="#000" stroke-width=".8"/>`;
   s += `</g></g>`;
   if (!sc.frame) s += `<ellipse cx="0" cy="-52" rx="80" ry="44" fill="url(#g${uid})" pointer-events="none"/>`;
