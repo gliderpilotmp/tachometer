@@ -29,6 +29,11 @@ function buildDash() {
     trip: sk.speed.trip == null ? none : speedo.addDrum(sk.speed.trip, sk.speed.tripDigits || 4, 10.5, 14, true, undefined, sk.speed.tripX),
     alt: sk.alt.drum == null ? none : alti.addDrum(sk.alt.drum, 4, 12, 16, false, undefined, sk.alt.drumX),
   };
+  const hasVario = !!sk.vario;
+  document.body.classList.toggle("has-vario", hasVario);
+  $("vario").hidden = !hasVario;
+  $("vario").innerHTML = "";
+  dash.vario = hasVario ? createInstrument($("vario"), sk, sk.vario, `Variometer im Stil ${sk.name}`) : null;
   $("skinName").textContent = sk.name;
   const radio = document.querySelector(`input[name="skin"][value="${sk.id}"]`);
   if (radio) radio.checked = true;
@@ -44,8 +49,9 @@ function stepSkin(dir) {
 }
 
 // ---------- GPS ----------
-const target = { speed: 0, alt: null };
-const shown = { speed: 0, alt: null, trip: state.trip };
+const target = { speed: 0, alt: null, vario: 0 };
+const shown = { speed: 0, alt: null, trip: state.trip, vario: 0 };
+let lastAltFix = null;
 let rawAlt = null, lastFix = 0, lastPos = null, watchId = null, gpsError = null, accuracy = null;
 
 const haversine = (a, b) => {
@@ -79,6 +85,12 @@ function onPosition(p) {
   lastPos = now;
 
   if (c.altitude != null && !Number.isNaN(c.altitude)) {
+    // Climb rate from successive GPS altitudes; heavy smoothing because GPS height is noisy.
+    if (lastAltFix && p.timestamp > lastAltFix.t) {
+      const rate = (c.altitude - lastAltFix.alt) / ((p.timestamp - lastAltFix.t) / 1000);
+      if (Math.abs(rate) < 30) target.vario += (rate - target.vario) * 0.3;
+    }
+    lastAltFix = { alt: c.altitude, t: p.timestamp };
     rawAlt = c.altitude;
     target.alt = rawAlt + state.altOffset;
     if (shown.alt == null) shown.alt = target.alt;
@@ -101,6 +113,7 @@ function startGps() {
 function demoTargets(t) {
   target.speed = Math.max(0, 70 + 55 * Math.sin(t * 0.11) + 18 * Math.sin(t * 0.37) + 4 * Math.sin(t * 1.3));
   target.alt = 520 + 260 * Math.sin(t * 0.03) + state.altOffset;
+  target.vario = 7.8 * Math.cos(t * 0.03) * (0.6 + 0.4 * Math.sin(t * 0.21));
   if (shown.alt == null) shown.alt = target.alt;
 }
 
@@ -131,10 +144,12 @@ function frame(now) {
     addDistance((target.speed / 3600) * dt);
   } else if (lastFix && now - lastFix > 6000) {
     target.speed = 0;
+    target.vario = 0;
   }
 
   shown.speed += (target.speed - shown.speed) * (1 - Math.exp(-dt / 0.35));
   if (target.alt != null) shown.alt += (target.alt - shown.alt) * (1 - Math.exp(-dt / 1.5));
+  shown.vario += (target.vario - shown.vario) * (1 - Math.exp(-dt / 1.2));
   shown.trip += (state.trip - shown.trip) * (1 - Math.exp(-dt / 0.8));
   if (state.trip < shown.trip - 0.5) shown.trip = state.trip;
 
@@ -142,6 +157,7 @@ function frame(now) {
   dash.odo(state.odo - (state.trip - shown.trip));
   dash.trip(shown.trip * 10);
   dash.alti.setValue(shown.alt == null ? -10 : Math.max(0, shown.alt) / 100);
+  if (dash.vario) dash.vario.setValue(shown.vario);
   dash.alt(shown.alt == null ? 0 : Math.max(0, Math.round(shown.alt)));
 
   if (now - statusTick > 500) { updateStatus(now); statusTick = now; }

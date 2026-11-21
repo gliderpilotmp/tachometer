@@ -39,12 +39,16 @@ button { font: inherit; color: inherit; }
   touch-action: pan-y;
 }
 .speedo { width: min(94vw, 60svh); }
+.lower { display: flex; gap: 3vw; align-items: center; justify-content: center; }
 .alti { width: min(58vw, 33svh); }
+.has-vario .alti, .vario { width: min(46vw, 30svh); }
 
 @media (orientation: landscape) {
   #dash { flex-direction: row; gap: 3vw; }
+  .lower { flex-direction: column; gap: 2svh; }
   .speedo { width: min(58vw, 94svh); }
   .alti { width: min(36vw, 62svh); }
+  .has-vario .alti, .vario { width: min(30vw, 45svh); }
 }
 
 .chip {

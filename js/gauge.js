@@ -131,7 +131,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     const big = (v - (L.bigOffset || 0)) % L.big === 0 && !(L.small || []).includes(v), an = ang(v), [x, y] = P(an, rr ?? (big ? L.bigR : L.r) * k(an));
     const rot = L.rotate ? ` transform="rotate(${an.toFixed(1)} ${x} ${y})"` : "";
     const stroke = (L.stroke ? ` stroke="${ink}" stroke-width="${L.stroke}"` : "") + (L.italic ? ` font-style="italic"` : "");
-    s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${L.div ? v / L.div : v}</text>`;
+    s += `<text x="${x}" y="${y}"${rot}${stroke} font-size="${big ? L.bigSize : L.size}" font-weight="${big ? L.bigWeight || 700 : 500}" fill="${ink}" text-anchor="middle" dominant-baseline="central">${L.abs ? Math.abs(v) : L.div ? v / L.div : v}</text>`;
   }
   for (const m of sc.marks || []) {
     if (m.tri) {
@@ -185,6 +185,7 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
   if (sc.hand2) s += needleSvg(sc.hand2, "needle2");
   if (sk.hub.r) s += `<circle r="${sk.hub.r}" fill="${sk.hub.silver ? `url(#h${uid})` : sk.hub.fill}" stroke="#000" stroke-width=".8"/>`;
   s += `</g></g>`;
+  if (sc.over) s += sc.over;
   if (!sc.frame) s += `<ellipse cx="0" cy="-52" rx="80" ry="44" fill="url(#g${uid})" pointer-events="none"/>`;
   s += `</svg>`;
 

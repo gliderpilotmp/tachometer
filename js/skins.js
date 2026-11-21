@@ -498,5 +498,24 @@ export const SKINS = [
         { x: 23, y: 68, s: 5, t: "100 m" },
       ],
     },
+    vario: {
+      frame: { bezel: SQ_BOX, face: ROUND_FACE },
+      under: GLIDER_RIM + SCREW(-92, -92) + SCREW(92, -92) + SCREW(-92, 92) + SCREW(92, 92),
+      v0: -5, a0: -225, v1: 5, a1: 45, rest: -229, from: -5, to: 5, minor: 1, major: 1,
+      R: 95, majL: 15, majW: 6.5, minL: 15, minW: 6.5,
+      lab: {
+        values: [[-5, 70], -4, -3, -2, -1, 0, 1, 2, 3, 4, [5, 70]], abs: true,
+        from: 0, step: 1, r: 65, size: 20, big: 1, bigSize: 20, bigR: 65, bigWeight: 600,
+      },
+      needle: { c: "#f4f4f0", b: 6, t: 6, len: 93, tail: 0 },
+      over: `<path d="M37.4,-25A45,45 0 1 0 39.3,22L93,22L93,-25Z" fill="#0c0c0c"/>
+<circle r="45" fill="none" stroke="#333" stroke-width="1"/>
+<g stroke="#f2f2ee" stroke-width="1.6" fill="none"><path d="M-2,-14V-32M-6,-27L-2,-32L2,-27"/><path d="M-2,14V32M-6,27L-2,32L2,27"/></g>
+<g fill="#262626" stroke="#000" stroke-width=".6"><circle cx="37" cy="-46" r="4.5"/><circle cx="40" cy="-1" r="4.5"/><circle cx="36" cy="41" r="4.5"/></g>
+<g stroke="#555" stroke-width="1"><line x1="34" y1="-48" x2="40" y2="-44"/><line x1="37" y1="-3" x2="43" y2="1"/><line x1="33" y1="39" x2="39" y2="43"/></g>
+<g fill="#f2f2ee" font-family="'Barlow', sans-serif" text-anchor="middle" dominant-baseline="central"><text x="-2" y="0" font-size="14" font-weight="600">winter</text>
+<text x="66" y="-15" font-size="6.5" font-weight="600">S Nr.05451</text><text x="57" y="-1" font-size="9" font-weight="600">m/s</text><text x="66" y="14" font-size="6.5" font-weight="600">WNr.67564</text></g>`,
+      odo: null, trip: null,
+    },
   },
 ];
