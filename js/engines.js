@@ -33,10 +33,11 @@ export const ENGINES = {
     pipe: [2.8, 1.3], fb: [0.5, 0.35], lpBase: 1000, lpRpm: 800, lpLoad: 2200, drive: 2.6, gain: 0.51,
   },
   vwbus: {
-    label: "Boxer-4, luftgekühlt", cyl: 4, idle: 850, redline: 4200,
+    label: "Boxer-4, luftgekühlt", cyl: 4, offsets: [0, 0.24, 0.5, 0.74], idle: 850, redline: 4200,
     ratios: [160, 89, 57, 40], shiftUp: [2600, 3800], shiftDown: 1300, shiftTime: 0.8,
-    tau: 0.9, noise: 0.4, clatter: 0.25, cylVar: 0.2, jitter: 0.15,
-    pipe: [3.8, 1.8], fb: [0.5, 0.3], lpBase: 350, lpRpm: 450, lpLoad: 700, drive: 2, gain: 1.0,
+    tau: 1.0, thump: 1.1, thumpTau: 4, noise: 0.2, clatter: 0.35, clTau: 0.4, clHp: 0.1, clLpHz: 2500,
+    cylVar: 0.25, jitter: 0.18,
+    pipe: [4.8, 2.0], fb: [0.4, 0.2], lpBase: 330, lpRpm: 380, lpLoad: 700, drive: 2.0, gain: 0.67,
   },
   abarth: {
     label: "2-Zylinder, luftgekühlt", cyl: 2, idle: 1000, redline: 6000,
