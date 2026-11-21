@@ -4,7 +4,7 @@ export const ENGINES = {
   w123: {
     label: "300 D · 5-Zylinder-Diesel", cyl: 5, idle: 700, redline: 4400,
     ratios: [100, 58, 37, 27], shiftUp: [2000, 3400], shiftDown: 1100, shiftTime: 0.8,
-    tau: 1.8, thump: 1.6, thumpTau: 6, noise: 0.05, clatter: 0.5, clTau: 1.2, clHp: 0.04, clLpHz: 900,
+    tau: 1.8, thump: 1.6, thumpTau: 6, noise: 0.05, clatter: 1.4, clTau: 1.2, clHp: 0.04, clLpHz: 900,
     cylVar: 0.22, jitter: 0.12,
     pipe: [7.5, 3.2], fb: [0.25, 0.1], lpBase: 260, lpRpm: 220, lpLoad: 400, drive: 1.1, gain: 0.97,
   },
