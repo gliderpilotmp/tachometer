@@ -17,8 +17,8 @@ export const ENGINES = {
   p911: {
     label: "3.2 Carrera · Boxer-6, luftgekühlt", cyl: 6, idle: 900, redline: 6500,
     ratios: [100, 57, 40, 31, 24.5], shiftUp: [3200, 5800], shiftDown: 1600, shiftTime: 0.4,
-    tau: 0.6, noise: 0.35, clatter: 0.15, cylVar: 0.15, jitter: 0.12,
-    pipe: [3.2, 1.4], fb: [0.5, 0.35], lpBase: 700, lpRpm: 500, lpLoad: 1200, drive: 2.4, gain: 0.52,
+    tau: 0.8, thump: 1.0, thumpTau: 3.5, noise: 0.2, clatter: 0.1, cylVar: 0.3, jitter: 0.2,
+    pipe: [4.2, 1.8], fb: [0.45, 0.25], lpBase: 450, lpRpm: 420, lpLoad: 1000, drive: 2.2, gain: 0.4,
   },
   f40: {
     label: "V8 Biturbo", cyl: 8, idle: 1000, redline: 7750, turbo: true,
