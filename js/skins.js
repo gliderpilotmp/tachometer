@@ -33,7 +33,7 @@ const KOLLSMAN = `<rect x="42" y="-15.5" width="31" height="31" rx="2" fill="#05
 
 export const SKINS = [
   {
-    id: "w123", name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
+    id: "w123", logo: [0, 44, 14], name: "Mercedes W123", era: "1976–1985", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#1b1b1b", "#0b0b0b"], bezel: "#1c1c1c", ring: "#8f8f8a", ink: "#f2f1ea", accent: "#ff7d1e",
     needle: { c: "#ff7d1e", b: 4.4, t: 1.6, len: 86, tail: 6 }, hub: { r: 10, silver: true },
     drum: { frame: "#030303", cell: "#0e0e0e", ink: "#f2f1ea", border: "#2e2e2e", lastBg: "#e9e6dc", lastInk: "#111" },
@@ -54,7 +54,7 @@ export const SKINS = [
     },
   },
   {
-    id: "w198", name: "Mercedes 300 SL", era: "W198 · 1954–1963", font: "'Barlow Semi Condensed', sans-serif",
+    id: "w198", logo: [0, 62, 12], name: "Mercedes 300 SL", era: "W198 · 1954–1963", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#1f2420", "#181c19"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#ece6c0", accent: "#ece6c0",
     bands: [
       { r0: 54, r1: 84, fill: "#1d221e", groove: 2.4, grooveColor: "#2e3530" },
@@ -81,7 +81,7 @@ export const SKINS = [
     },
   },
   {
-    id: "e30", name: "BMW E30", era: "1982–1994", font: "'Archivo Narrow', sans-serif",
+    id: "e30", logo: [0, 44, 14], name: "BMW E30", era: "1982–1994", font: "'Archivo Narrow', sans-serif",
     face: ["#151515", "#0c0c0c"], bezel: "#0c0c0c", ring: "#0c0c0c", ink: "#f7f7f4", accent: "#e8261e",
     needle: { c: "#e8261e", b: 4.8, t: 4.2, len: 93, tail: 0 }, hub: { r: 13, fill: "#0a0a0a" },
     screws: [[-42, 2], [42, 2]],
@@ -105,7 +105,7 @@ export const SKINS = [
     },
   },
   {
-    id: "p911", name: "Porsche 911", era: "G-Modell 1974–1989", font: "'Jost', sans-serif",
+    id: "p911", logo: [0, 62, 16], name: "Porsche 911", era: "G-Modell 1974–1989", font: "'Jost', sans-serif",
     face: ["#22201e", "#121110"], bezel: "#0a0a0a", ring: "#3b3b3b", ink: "#f4f3ee", accent: "#ff6a13",
     needle: { c: "#ff6a13", b: 5.2, t: 4, len: 92, tail: 4 }, hub: { r: 13, fill: "#2b2a29" },
     screws: [[-38, 6], [38, 6]],
@@ -126,7 +126,7 @@ export const SKINS = [
     },
   },
   {
-    id: "p944", name: "Porsche 944", era: "1982–1991", font: "'Jost', sans-serif",
+    id: "p944", logo: [0, 62, 16], name: "Porsche 944", era: "1982–1991", font: "'Jost', sans-serif",
     face: ["#2e2e2f", "#262627"], bezel: "#111", ring: "#111", ink: "#f6f6f2", accent: "#ff5a14",
     needle: { c: "#ff5a14", b: 3.6, t: 3, len: 92, tail: 0 }, hub: { r: 14, fill: "#2a2a2a" },
     screws: [[-46, 9], [46, 9]],
@@ -147,7 +147,7 @@ export const SKINS = [
     },
   },
   {
-    id: "p959", name: "Porsche 959", era: "1986–1988", font: "'Jost', sans-serif",
+    id: "p959", logo: [0, 46, 14], name: "Porsche 959", era: "1986–1988", font: "'Jost', sans-serif",
     face: ["#171717", "#0c0c0c"], bezel: "#0a0a0a", ring: "#8f8f8b", ink: "#f4f4f0", accent: "#ff4419",
     needle: { c: "#ff4d1a", b: 4.6, t: 3.6, len: 92, tail: 0 }, hub: { r: 13, fill: "#262626" },
     screws: [[-30, 0], [30, 0]],
@@ -170,7 +170,7 @@ export const SKINS = [
     },
   },
   {
-    id: "p356", name: "Porsche 356", era: "1948–1965", font: "'Barlow Semi Condensed', sans-serif",
+    id: "p356", logo: [0, 62, 14], name: "Porsche 356", era: "1948–1965", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#2c3647", "#222a38"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#eef1f3", accent: "#d8333a",
     bands: [
       { r0: 50, r1: 85, fill: "#28313f", groove: 2.6, grooveColor: "#323d4e" },
@@ -197,7 +197,7 @@ export const SKINS = [
     },
   },
   {
-    id: "vwbus", name: "VW Bus T1", era: "1950–1967", font: "'Barlow Semi Condensed', sans-serif",
+    id: "vwbus", logo: [0, 64, 12], name: "VW Bus T1", era: "1950–1967", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#c2b796", "#a99e7e"], bezel: "#b8b8b4", chrome: true, ring: "#6a6a66", ink: "#efe0a6", accent: "#d9352a",
     bands: [{ r0: 44, r1: 88, fill: "#26211d", groove: 2.6, grooveColor: "#3d3630" }],
     needle: { c: "#f1ead6", b: 3.4, t: 1.2, len: 64, tail: 0 }, hub: { r: 10, fill: "#151413" },
@@ -220,7 +220,7 @@ export const SKINS = [
     },
   },
   {
-    id: "golf1", name: "VW Golf 1", era: "1974–1983", font: "'Barlow', sans-serif", squircle: 5,
+    id: "golf1", logo: [0, 68, 14], name: "VW Golf 1", era: "1974–1983", font: "'Barlow', sans-serif", squircle: 5,
     face: ["#2f2a26", "#231f1b"], bezel: "#0e0e0e", ring: "#0e0e0e", ink: "#f2efe8", accent: "#e8452c",
     needle: { c: "#f0ead8", b: 5, t: 3, len: 84, tail: 18 }, hub: { r: 8, fill: "#0b0b0b" },
     screws: [[-40, -2], [40, -2]],
@@ -241,7 +241,7 @@ export const SKINS = [
     },
   },
   {
-    id: "rekorde", name: "Opel Rekord E", era: "1977–1986", font: "'Michroma', sans-serif",
+    id: "rekorde", logo: [-26, 60, 14], name: "Opel Rekord E", era: "1977–1986", font: "'Michroma', sans-serif",
     face: ["#151515", "#0c0c0c"], bezel: "#0a0a0a", ring: "#1c1c1c", ink: "#f4f4f0", accent: "#e8402a",
     needle: { c: "#ffa51c", b: 5.6, t: 4, len: 86, tail: 0 }, hub: { r: 13, fill: "#161616" },
     drum: { frame: "#000", cell: "#0b0b0b", ink: "#ecece6", border: "none", lastBg: "#ecebe3", lastInk: "#111", font: "'Barlow', sans-serif" },
@@ -261,7 +261,7 @@ export const SKINS = [
     },
   },
   {
-    id: "dyane", name: "Citroën Dyane", era: "1967–1983", font: "'Jost', sans-serif",
+    id: "dyane", logo: [62, 46, 12], name: "Citroën Dyane", era: "1967–1983", font: "'Jost', sans-serif",
     face: ["#8f6b4f", "#7b5b42"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#f6f3ee", accent: "#f0552a",
     needle: { c: "#ff5f2a", b: 2.6, t: 2.2, len: 178, tail: 0 }, hub: { r: 0 },
     drum: { frame: "#3a2d22", cell: "#111", ink: "#eeeeea", border: "none", lastBg: "#111", lastInk: "#eeeeea" },
@@ -283,7 +283,7 @@ export const SKINS = [
     },
   },
   {
-    id: "cx", name: "Citroën CX", era: "Lupentacho · 1974–1985", type: "lupe", font: "'Barlow Semi Condensed', sans-serif",
+    id: "cx", logo: [0, -54, 7], name: "Citroën CX", era: "Lupentacho · 1974–1985", type: "lupe", font: "'Barlow Semi Condensed', sans-serif",
     face: ["#f7d75a", "#e0a92a"], bezel: "#2a2b2e", ring: "#45474b", ink: "#1b1408", accent: "#d8261c",
     drum: { frame: "#0b0b0c", cell: "#111", ink: "#eeeeea", border: "none", lastBg: "#111", lastInk: "#eeeeea" },
     speed: {
@@ -300,7 +300,7 @@ export const SKINS = [
     },
   },
   {
-    id: "abarth", name: "Fiat 500 Abarth", era: "595/695 · 1963–1971", font: "'Archivo Narrow', sans-serif",
+    id: "abarth", logo: [0, 70, 18], name: "Fiat 500 Abarth", era: "595/695 · 1963–1971", font: "'Archivo Narrow', sans-serif",
     face: ["#d9262c", "#b91a20"], bezel: "#b8b8b4", chrome: true, ring: "#5d5d5a", ink: "#f3ede0", accent: "#f3ede0",
     needle: { c: "#efe8d8", b: 7, t: 3, len: 84, tail: 0 }, hub: { r: 15, fill: "#efe8d8" },
     screws: [[-34, 4], [34, 4]],
@@ -322,7 +322,7 @@ export const SKINS = [
     },
   },
   {
-    id: "spider", name: "Alfa Romeo Spider", era: "1966–1993", font: "'Archivo Narrow', sans-serif",
+    id: "spider", logo: [0, 48, 16], name: "Alfa Romeo Spider", era: "1966–1993", font: "'Archivo Narrow', sans-serif",
     face: ["#141414", "#0b0b0b"], bezel: "#b8b8b4", chrome: true, ring: "#4f4f4c", ink: "#efeee6", accent: "#d9261c",
     needle: { c: "#f2f2ee", b: 3.4, t: 1.8, len: 90, tail: 10 }, hub: { r: 11, silver: true },
     screws: [[-24, -6], [24, -6]],
@@ -344,7 +344,7 @@ export const SKINS = [
     },
   },
   {
-    id: "stratos", name: "Lancia Stratos", era: "HF Stradale · 1973–1978", font: "'Barlow', sans-serif",
+    id: "stratos", logo: [0, 76, 12], name: "Lancia Stratos", era: "HF Stradale · 1973–1978", font: "'Barlow', sans-serif",
     face: ["#171615", "#0e0d0d"], bezel: "#0b0b0b", ring: "#1a1a1a", ink: "#f0efea", accent: "#d9261c",
     needle: { c: "#eeece4", b: 7, t: 2.4, len: 84, tail: 0 }, hub: { r: 6, fill: "#111" },
     screws: [[-30, -2], [30, -2]],
@@ -365,7 +365,7 @@ export const SKINS = [
     },
   },
   {
-    id: "countach", name: "Lamborghini Countach", era: "1974–1990", font: "'Michroma', sans-serif",
+    id: "countach", logo: [-2, 76, 18], name: "Lamborghini Countach", era: "1974–1990", font: "'Michroma', sans-serif",
     face: ["#23272a", "#1a1d20"], bezel: "#0c0d0e", ring: "#2a2d30", ink: "#a9dcc7", accent: "#ff8a2a",
     needle: { c: "#ff8a2a", b: 3.8, t: 3, len: 92, tail: 0 }, hub: { r: 14, fill: "#2b2e31" },
     screws: [[-58, 0], [58, 0]],
@@ -392,7 +392,7 @@ export const SKINS = [
     },
   },
   {
-    id: "testarossa", name: "Ferrari Testarossa", era: "1984–1991", font: "'Archivo Narrow', sans-serif",
+    id: "testarossa", logo: [-14, 44, 14], name: "Ferrari Testarossa", era: "1984–1991", font: "'Archivo Narrow', sans-serif",
     face: ["#141414", "#0b0b0b"], bezel: "#1b1c1e", ring: "#2c2d30", ink: "#ff8a1e", accent: "#ff8a1e",
     needle: { c: "#ff8a1e", b: 3.2, t: 2.2, len: 86, tail: 8 }, hub: { r: 6, fill: "#0c0c0c" },
     screws: [[-13, -3], [13, -3]],
@@ -414,7 +414,7 @@ export const SKINS = [
     },
   },
   {
-    id: "f40", name: "Ferrari F40", era: "1987–1992", font: "'Archivo Narrow', sans-serif",
+    id: "f40", logo: [0, -52, 14], name: "Ferrari F40", era: "1987–1992", font: "'Archivo Narrow', sans-serif",
     face: ["#3a3a3b", "#232324"], bezel: "#0b0b0b", ring: "#2c2c2c", ink: "#ecebe6", accent: "#c8201e",
     needle: { c: "#f2f2ec", b: 4, t: 3.2, len: 90, tail: 4 }, hub: { r: 12, fill: "#0c0c0c" },
     screws: [[-30, 5], [30, 5]],
@@ -435,7 +435,7 @@ export const SKINS = [
     },
   },
   {
-    id: "arcus", name: "Arcus · Winter", era: "Segelflug-Instrumente", font: "'Barlow', sans-serif",
+    id: "arcus", logo: [-30, 52, 12], name: "Arcus · Winter", era: "Segelflug-Instrumente", font: "'Barlow', sans-serif",
     face: ["#151515", "#0d0d0d"], bezel: "#121212", ring: "#2c2c2c", ink: "#f2f2ee", accent: "#f2c230",
     needle: { c: "#f4f4f0", b: 3.4, t: 1.6, len: 92, tail: 30 }, hub: { r: 7, fill: "#1a1a1a" },
     drum: { frame: "#000", cell: "#0e0e0e", ink: "#f2f2ee", border: "#555", lastBg: "#0e0e0e", lastInk: "#f2f2ee" },

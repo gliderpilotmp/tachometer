@@ -27,6 +27,7 @@
 </main>
 
 <div id="status" class="chip" role="status">GPS aus</div>
+<div id="caption"><b id="captionName"></b><span id="captionEra"></span></div>
 
 <nav id="bar" aria-label="Bedienung">
   <button id="prevSkin" type="button" aria-label="Vorheriger Skin">‹</button>
@@ -52,6 +53,17 @@
     <fieldset>
       <legend>Skin</legend>
       <div id="skinList" class="skin-list"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Logo auf dem Tacho</legend>
+      <p class="fine" id="logoFor"></p>
+      <div class="row">
+        <img id="logoPreview" alt="" hidden>
+        <label class="file-btn" for="logoFile">Bild wählen</label>
+        <input id="logoFile" type="file" accept="image/*">
+        <button id="logoRemove" type="button" hidden>Entfernen</button>
+      </div>
+      <p class="fine" id="logoHint">Das Bild bleibt nur auf diesem Gerät gespeichert. PNG mit transparentem Hintergrund sieht am besten aus.</p>
     </fieldset>
     <fieldset>
       <legend>Höhenmesser</legend>

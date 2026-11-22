@@ -208,6 +208,9 @@ ${sc.clip ? `<clipPath id="w${uid}"><path d="${sc.clip}"/></clipPath>` : ""}</de
     addDrum(y, digits, cw, ch, highlightLast, style, x = 0) {
       return createDrum(el("g", { transform: `translate(${x} ${y})` }, drums), sk, digits, cw, ch, highlightLast, style);
     },
+    addImage(href, x, y, size) {
+      drums.before(el("image", { href, x: x - size / 2, y: y - size / 2, width: size, height: size, preserveAspectRatio: "xMidYMid meet" }));
+    },
   };
 }
 
@@ -247,6 +250,9 @@ function createLupe(container, sk, sc, label) {
     },
     addDrum(y, digits, cw, ch, highlightLast, style, x = 0) {
       return createDrum(el("g", { transform: `translate(${x} ${y})` }, drums), sk, digits, cw, ch, highlightLast, style);
+    },
+    addImage(href, x, y, size) {
+      drums.before(el("image", { href, x: x - size / 2, y: y - size / 2, width: size, height: size, preserveAspectRatio: "xMidYMid meet" }));
     },
   };
 }

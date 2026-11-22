@@ -25,6 +25,32 @@ function refreshSoundHint(sk) {
   $("soundHint").textContent = e ? `${sk.name}: ${e.label}. Gänge und Drehzahl folgen deiner Geschwindigkeit.` : `${sk.name} hat noch keinen Motorsound. Verfügbar bei: ${withSound}.`;
 }
 
+// ---------- own logos (stored only on this device) ----------
+const LOGO_KEY = "klassik-tacho-logo-";
+const loadLogo = (id) => { try { return localStorage.getItem(LOGO_KEY + id); } catch { return null; } };
+function refreshLogoUi(sk, logo) {
+  $("logoFor").textContent = `Für ${sk.name}. Es erscheint auf dem Tacho dort, wo im Original Logo oder Schriftzug sitzen.`;
+  $("logoPreview").hidden = !logo;
+  if (logo) $("logoPreview").src = logo;
+  $("logoRemove").hidden = !logo;
+}
+// Scale the picture down to at most 256 px so it fits comfortably in local storage.
+function shrinkImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 256 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(img.width * k));
+      c.height = Math.max(1, Math.round(img.height * k));
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/png"));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("image")); };
+    img.src = url;
+  });
+}
+
 // ---------- dashboard ----------
 let dash = null;
 function buildDash() {
@@ -45,6 +71,11 @@ function buildDash() {
   $("vario").hidden = !hasVario;
   $("vario").innerHTML = "";
   dash.vario = hasVario ? createInstrument($("vario"), sk, sk.vario, `Variometer im Stil ${sk.name}`) : null;
+  const logo = loadLogo(sk.id);
+  if (logo && sk.logo) speedo.addImage(logo, ...sk.logo);
+  $("captionName").textContent = sk.name;
+  $("captionEra").textContent = sk.era;
+  refreshLogoUi(sk, logo);
   engine.setProfile(ENGINES[sk.id] || null);
   refreshSoundHint(sk);
   $("skinName").textContent = sk.name;
@@ -306,6 +337,22 @@ $("demoToggle").addEventListener("change", (e) => {
     if (target.alt == null) shown.alt = null;
     startGps();
   }
+});
+$("logoFile").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  try {
+    const url = await shrinkImage(file);
+    localStorage.setItem(LOGO_KEY + state.skin, url);
+    buildDash();
+  } catch {
+    $("logoHint").textContent = "Das Bild ließ sich nicht laden oder speichern. Versuche ein kleineres PNG oder JPG.";
+  }
+});
+$("logoRemove").addEventListener("click", () => {
+  try { localStorage.removeItem(LOGO_KEY + state.skin); } catch {}
+  buildDash();
 });
 $("soundToggle").addEventListener("change", (e) => {
   state.sound = e.target.checked; dirty = true;

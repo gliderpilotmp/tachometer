@@ -1,4 +1,4 @@
-const VERSION = "tacho-v27";
+const VERSION = "tacho-v28";
 const SHELL = [
   "./",
   "index.html",

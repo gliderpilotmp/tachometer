@@ -81,6 +81,22 @@ button { font: inherit; color: inherit; }
 .chip[data-state="lost"] { --chip-dot: var(--danger); }
 .chip[data-state="demo"] { --chip-dot: var(--accent); }
 
+#caption {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 14px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 55vw;
+  text-align: right;
+  line-height: 1.2;
+  pointer-events: none;
+  opacity: 0.75;
+}
+#caption b { font-family: var(--f-head); font-weight: 600; font-size: 15px; letter-spacing: 0.02em; }
+#caption span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+
 #bar {
   position: fixed;
   left: 50%;
@@ -165,6 +181,10 @@ input[type="number"] {
   font: inherit;
   font-variant-numeric: tabular-nums;
 }
+#logoFile { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.file-btn { background: #222428; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; font-weight: 600; color: var(--fg) !important; cursor: pointer; }
+#logoFile:focus-visible + .file-btn { outline: 2px solid var(--accent); }
+#logoPreview { width: 48px; height: 48px; object-fit: contain; background: #0d0e10; border: 1px solid var(--line); border-radius: 8px; }
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 .check { display: flex; gap: 10px; align-items: center; color: var(--fg) !important; }
 .check input { width: 20px; height: 20px; accent-color: var(--accent); }
