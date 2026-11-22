@@ -21,7 +21,7 @@ export const ENGINES = {
     pipe: [5.2, 2.3], fb: [0.45, 0.25], lpBase: 370, lpRpm: 350, lpLoad: 1000, drive: 2.2, gain: 0.45,
   },
   f40: {
-    label: "V8 Biturbo", pops: 0.08, cyl: 8, idle: 1000, redline: 7750, turbo: true,
+    label: "V8 Biturbo", cyl: 8, idle: 1000, redline: 7750, turbo: true,
     ratios: [91, 57, 42, 32, 24.5], shiftUp: [3800, 7000], shiftDown: 2000, shiftTime: 0.3,
     tau: 0.45, thump: 1.4, thumpTau: 4, noise: 0.3, clatter: 0.05, cylVar: 0.08, jitter: 0.1,
     pipe: [3.6, 1.6], fb: [0.55, 0.35], lpBase: 420, lpRpm: 520, lpLoad: 1400, drive: 3.6, gain: 0.35,
