@@ -123,10 +123,13 @@ export const SKINS = [
       texts: [{ y: -41, s: 9.5, t: "KM", w: 600 }, { y: 71, s: 6, t: "ELECTRONIC", w: 600 }],
     },
     alt: {
-      v0: 0, a0: -130, v1: 40, a1: 130, rest: -134, from: 0, to: 40, minor: 1, major: 5,
-      R: 96, majL: 14, majW: 5, minL: 7, minW: 2.6,
-      lab: { from: 0, step: 5, r: 72, size: 11, big: 10, bigSize: 19, bigR: 67 },
-      drum: 32, texts: [{ y: -32, s: 10, t: "HÖHE", w: 600 }, { y: -20, s: 7.5, t: "m × 100" }],
+      v0: 0, a0: -119.5, v1: 40, a1: 119.5, rest: -130, from: 0, to: 40, minor: 2.5, major: 5,
+      R: 97, majL: 10, majW: 5, minL: 7, minW: 3.4,
+      lab: {
+        values: [[0, 77], [5, 80], [10, 72], [15, 80], [20, 74], [25, 80], [30, 72], [35, 80], [40, 76]],
+        from: 0, step: 5, r: 80, size: 8.5, big: 10, bigSize: 15, bigR: 72, bigWeight: 600,
+      },
+      drum: 30, texts: [{ y: -41, s: 9.5, t: "HÖHE", w: 600 }, { y: 71, s: 6, t: "m × 100", w: 600 }],
     },
   },
   {
