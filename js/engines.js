@@ -33,17 +33,17 @@ export const ENGINES = {
     pipe: [4.0, 1.8], fb: [0.5, 0.3], lpBase: 420, lpRpm: 450, lpLoad: 1300, drive: 2.8, gain: 0.36,
   },
   vwbus: {
-    label: "Boxer-4, luftgekühlt", cyl: 4, offsets: [0, 0.24, 0.5, 0.74], idle: 850, redline: 4200,
-    ratios: [160, 89, 57, 40], shiftUp: [2600, 3800], shiftDown: 1300, shiftTime: 0.8,
-    tau: 1.0, thump: 1.1, thumpTau: 4, noise: 0.2, clatter: 0.35, clTau: 0.4, clHp: 0.1, clLpHz: 2500,
+    label: "Boxer-4, luftgekühlt", cyl: 4, offsets: [0, 0.24, 0.5, 0.74], idle: 750, redline: 4200,
+    ratios: [160, 89, 57, 40], shiftUp: [2200, 3400], shiftDown: 1100, shiftTime: 0.8,
+    tau: 1.2, thump: 1.2, thumpTau: 5.5, noise: 0.15, clatter: 0.3, clTau: 0.4, clHp: 0.1, clLpHz: 2500,
     cylVar: 0.25, jitter: 0.18,
-    pipe: [4.8, 2.0], fb: [0.4, 0.2], lpBase: 330, lpRpm: 380, lpLoad: 700, drive: 2.0, gain: 0.67,
+    pipe: [6.2, 2.7], fb: [0.4, 0.2], lpBase: 260, lpRpm: 300, lpLoad: 600, drive: 2.0, gain: 0.67,
   },
   abarth: {
     label: "2-Zylinder, luftgekühlt", cyl: 2, idle: 1000, redline: 6000,
     ratios: [171, 100, 67, 48], shiftUp: [3200, 5600], shiftDown: 1600, shiftTime: 0.45,
     tau: 0.45, thump: 0.6, thumpTau: 2.5, noise: 0.6, clatter: 0.5, clTau: 0.2, clHp: 0.15, clLpHz: 4000,
-    cylVar: 0.15, jitter: 0.25, pops: 0.12,
+    cylVar: 0.15, jitter: 0.25,
     pipe: [2.0, 0.9], fb: [0.4, 0.2], lpBase: 1200, lpRpm: 900, lpLoad: 1500, drive: 3.5, gain: 0.42,
   },
 };
