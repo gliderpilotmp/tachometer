@@ -29,8 +29,8 @@ export const ENGINES = {
   testarossa: {
     label: "Boxer-12", cyl: 12, idle: 950, redline: 6800,
     ratios: [90, 56, 41, 32, 24], shiftUp: [3500, 6300], shiftDown: 1900, shiftTime: 0.35,
-    tau: 0.4, noise: 0.2, clatter: 0.03, cylVar: 0.05, jitter: 0.08,
-    pipe: [2.8, 1.3], fb: [0.5, 0.35], lpBase: 1000, lpRpm: 800, lpLoad: 2200, drive: 2.6, gain: 0.51,
+    tau: 0.5, thump: 2.2, thumpTau: 5, noise: 0.15, clatter: 0.03, cylVar: 0.1, jitter: 0.1,
+    pipe: [4.0, 1.8], fb: [0.5, 0.3], lpBase: 420, lpRpm: 450, lpLoad: 1300, drive: 2.8, gain: 0.36,
   },
   vwbus: {
     label: "Boxer-4, luftgekühlt", cyl: 4, offsets: [0, 0.24, 0.5, 0.74], idle: 850, redline: 4200,
