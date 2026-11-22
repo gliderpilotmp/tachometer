@@ -46,3 +46,6 @@ export const ENGINES = {
     pipe: [2.8, 1.2], fb: [0.55, 0.3], lpBase: 600, lpRpm: 700, lpLoad: 1500, drive: 3, gain: 0.7,
   },
 };
+
+// All Porsche skins share the 911 flat-six sound.
+for (const id of ["p944", "p959", "p356"]) ENGINES[id] = { ...ENGINES.p911, label: "Porsche-Boxerklang wie beim 911" };
