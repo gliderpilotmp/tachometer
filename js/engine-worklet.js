@@ -19,7 +19,7 @@ class EngineProcessor extends AudioWorkletProcessor {
     this.del = new Float32Array(16384);
     this.w = 0;
     this.rpm = 0; this.load = 0.2; this.vol = 0;
-    this.lp = 0; this.clLp = 0; this.clBand = 0; this.dcIn = 0; this.dcOut = 0; this.hpIn = 0; this.hpOut = 0;
+    this.lp = 0; this.clLp = 0; this.clBand = 0; this.dcIn = 0; this.dcOut = 0; this.popEnv = 0; this.hpIn = 0; this.hpOut = 0;
     this.boost = 0; this.tph = 0; this.blowEnv = 0; this.lastBlow = 0; this.blLp = 0;
     this.setProfile(options.processorOptions?.profile || null);
     this.port.onmessage = (e) => { if ("profile" in e.data) this.setProfile(e.data.profile); };
@@ -47,7 +47,7 @@ class EngineProcessor extends AudioWorkletProcessor {
     const tRpm = params.rpm[0], tLoad = params.load[0], tVol = params.vol[0], blow = params.blow[0];
     if (blow > 0.5 && this.lastBlow <= 0.5) this.blowEnv = 1;
     this.lastBlow = blow;
-    const blowDecay = Math.exp(-1 / (0.35 * sr)), boostSm = 1 - Math.exp(-1 / (0.6 * sr));
+    const popDecay = Math.exp(-1 / (0.004 * sr)), blowDecay = Math.exp(-1 / (0.35 * sr)), boostSm = 1 - Math.exp(-1 / (0.6 * sr));
 
     for (let i = 0; i < out.length; i++) {
       this.rpm += (tRpm - this.rpm) * sm;
@@ -62,6 +62,8 @@ class EngineProcessor extends AudioWorkletProcessor {
         this.pa[j] = this.amps[this.k] * (1 + (Math.random() - 0.5) * p.jitter) * (0.3 + 0.7 * this.load);
         this.pt[j] = 0;
         if (++this.k === p.cyl) { this.k = 0; this.base += 1; }
+        // Overrun backfire: on a closed throttle at speed some firings pop in the exhaust.
+        if (p.pops && this.load < 0.12 && this.rpm > 1800 && Math.random() < p.pops) this.popEnv = 0.6 + Math.random() * 0.4;
       }
 
       let x = 0, c = 0;
@@ -107,6 +109,10 @@ class EngineProcessor extends AudioWorkletProcessor {
         }
       }
 
+      if (this.popEnv > 0.001) {
+        s += (Math.random() * 2 - 1) * this.popEnv * 1.2;
+        this.popEnv *= popDecay;
+      }
       s = Math.tanh(s * p.drive);
       const o = s - this.hpIn + 0.995 * this.hpOut;
       this.hpIn = s;

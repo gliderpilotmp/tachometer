@@ -42,8 +42,9 @@ export const ENGINES = {
   abarth: {
     label: "2-Zylinder, luftgekühlt", cyl: 2, idle: 1000, redline: 6000,
     ratios: [171, 100, 67, 48], shiftUp: [3200, 5600], shiftDown: 1600, shiftTime: 0.45,
-    tau: 0.7, noise: 0.35, clatter: 0.2, cylVar: 0.1, jitter: 0.12,
-    pipe: [2.8, 1.2], fb: [0.55, 0.3], lpBase: 600, lpRpm: 700, lpLoad: 1500, drive: 3, gain: 0.7,
+    tau: 0.45, thump: 0.6, thumpTau: 2.5, noise: 0.6, clatter: 0.5, clTau: 0.2, clHp: 0.15, clLpHz: 4000,
+    cylVar: 0.15, jitter: 0.25, pops: 0.35,
+    pipe: [2.0, 0.9], fb: [0.4, 0.2], lpBase: 1200, lpRpm: 900, lpLoad: 1500, drive: 3.5, gain: 0.42,
   },
 };
 
